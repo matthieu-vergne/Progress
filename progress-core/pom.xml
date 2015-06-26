@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>fr.matthieu-vergne</groupId>
 		<artifactId>progress</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 
 	<artifactId>progress-core</artifactId>
