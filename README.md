@@ -75,6 +75,7 @@ Other facilities are supported, like:
 - set the maximum value only when it is known,
 - register a `ProgressListener` to be informed when a `Progress` is updated,
 - build a `JProgressBar` to manually insert it into an existing Swing GUI,
+- use any kind of `Number`, like `Double` or even `BigInteger`,
 - etc.
 
 Of course, feedbacks are welcome! {^_°}
