@@ -3,6 +3,8 @@ package fr.vergne.progress.impl;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Test;
@@ -138,5 +140,42 @@ public class ManualProgressTest {
 		ManualProgress<Integer> progress = new ManualProgress<Integer>(5, null);
 
 		assertEquals(null, progress.getMaxValue());
+	}
+
+	@Test
+	public void testManualProgressFinishedStateWithMax() {
+		int max = 10;
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(0, max);
+
+		for (int i = 0; i < max; i++) {
+			progress.setCurrentValue(i);
+			assertFalse(progress.isFinished());
+		}
+		progress.setCurrentValue(max);
+		assertTrue(progress.isFinished());
+	}
+
+	@Test
+	public void testManualProgressFinishedStateWithoutMax() {
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(0, null);
+
+		for (int i = 0; i < 100; i++) {
+			progress.setCurrentValue(i);
+			assertFalse(progress.isFinished());
+		}
+		progress.setMaxValue(progress.getCurrentValue());
+		assertTrue(progress.isFinished());
+	}
+
+	@Test
+	public void testManualProgressProperlyFinishedWhenRequested() {
+		Collection<ManualProgress<Integer>> progresses = new LinkedList<ManualProgress<Integer>>();
+		progresses.add(new ManualProgress<Integer>(0, 10));
+		progresses.add(new ManualProgress<Integer>(5, null));
+
+		for (ManualProgress<Integer> progress : progresses) {
+			progress.finish();
+			assertTrue(progress.isFinished());
+		}
 	}
 }
