@@ -88,7 +88,7 @@ public class ProgressFactory {
 			}
 
 			@Override
-			public void removeUpdateListener(ProgressListener<Value> listener) {
+			public void removeProgressListener(ProgressListener<Value> listener) {
 				listeners.remove(listener);
 			}
 

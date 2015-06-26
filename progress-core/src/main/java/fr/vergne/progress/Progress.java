@@ -114,5 +114,5 @@ public interface Progress<Value extends Number> {
 	 * @param listener
 	 *            the listener to unregister
 	 */
-	public void removeUpdateListener(ProgressListener<Value> listener);
+	public void removeProgressListener(ProgressListener<Value> listener);
 }
