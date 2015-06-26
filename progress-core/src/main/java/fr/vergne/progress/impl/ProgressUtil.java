@@ -143,13 +143,14 @@ public class ProgressUtil {
 	 *            the {@link OutputStream} on which it should be displayed
 	 */
 	public static <Value extends Number> void displayProgressOnOutputStream(
-			final Progress<Value> progress, OutputStream stream) {
+			final String prefix, final Progress<Value> progress,
+			OutputStream stream) {
 		final PrintStream printer = new PrintStream(stream);
 		progress.addProgressListener(new ProgressListener<Value>() {
 
 			@Override
 			public void currentUpdate(Value value) {
-				printer.println(ProgressUtil.toString(progress));
+				printer.println(prefix + ProgressUtil.toString(progress));
 			}
 
 			@Override
@@ -157,6 +158,11 @@ public class ProgressUtil {
 				printer.println("Progress finished when reaches " + maxValue);
 			}
 		});
+	}
+
+	public static <Value extends Number> void displayProgressOnOutputStream(
+			final Progress<Value> progress, OutputStream stream) {
+		displayProgressOnOutputStream(null, progress, stream);
 	}
 
 	/**
