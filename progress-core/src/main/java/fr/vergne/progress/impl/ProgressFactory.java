@@ -3,6 +3,8 @@ package fr.vergne.progress.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import fr.vergne.progress.Progress;
@@ -161,4 +163,157 @@ public class ProgressFactory {
 
 	}
 
+	/**
+	 * This method aims at providing a global {@link Progress} over a collection
+	 * of more specific {@link Progress} instances. The idea is that the current
+	 * (resp. max) {@link Value} of this {@link Progress} equals the sum of the
+	 * current (resp. max) {@link Value}s of each sub-{@link Progress}.
+	 * consequently, the {@link Progress} returned is finished only when all the
+	 * sub-{@link Progress} instances are also finished.
+	 * 
+	 * @param subProgresses
+	 *            all the {@link Progress} instances to cover
+	 * @return the global {@link Progress}
+	 */
+	public <Value extends Number> Progress<Value> createCombinedProgress(
+			final Collection<? extends Progress<Value>> subProgresses) {
+		if (subProgresses == null || subProgresses.isEmpty()) {
+			throw new IllegalArgumentException("No sub-progresses provided: "
+					+ subProgresses);
+		} else {
+			final List<Value> values = new ArrayList<Value>(2);
+			values.add(computeCurrentValue(subProgresses));
+			values.add(computeMaxValue(subProgresses));
+
+			final Collection<ProgressListener<Value>> listeners = new HashSet<Progress.ProgressListener<Value>>();
+
+			final ProgressListener<Value> globalListener = new ProgressListener<Value>() {
+
+				@Override
+				public void currentUpdate(Value value) {
+					Value globalValue = computeCurrentValue(subProgresses);
+					values.set(0, globalValue);
+					for (ProgressListener<Value> listener : listeners) {
+						listener.currentUpdate(globalValue);
+					}
+				}
+
+				@Override
+				public void maxUpdate(Value maxValue) {
+					Value globalValue = computeMaxValue(subProgresses);
+					values.set(1, globalValue);
+					for (ProgressListener<Value> listener : listeners) {
+						listener.maxUpdate(globalValue);
+					}
+				}
+			};
+
+			for (Progress<Value> subprogress : subProgresses) {
+				subprogress.addProgressListener(globalListener);
+			}
+
+			return new Progress<Value>() {
+
+				@Override
+				public Value getCurrentValue() {
+					return values.get(0);
+				}
+
+				@Override
+				public Value getMaxValue() {
+					return values.get(1);
+				}
+
+				@Override
+				public boolean isFinished() {
+					return getCurrentValue().equals(getMaxValue());
+				}
+
+				@Override
+				public void addProgressListener(ProgressListener<Value> listener) {
+					listeners.add(listener);
+				}
+
+				@Override
+				public void removeProgressListener(
+						ProgressListener<Value> listener) {
+					listeners.remove(listener);
+				}
+
+				@Override
+				protected void finalize() throws Throwable {
+					for (Progress<Value> subprogress : subProgresses) {
+						subprogress.removeProgressListener(globalListener);
+					}
+				}
+			};
+		}
+	}
+
+	private <Value extends Number> Value computeCurrentValue(
+			final Collection<? extends Progress<Value>> subProgresses) {
+		List<Value> values = new LinkedList<Value>();
+		for (Progress<Value> progress : subProgresses) {
+			values.add(progress.getCurrentValue());
+		}
+		Adder<Value> adder = selectAdder(values.get(0));
+		return sum(values, adder);
+	}
+
+	private <Value extends Number> Value computeMaxValue(
+			final Collection<? extends Progress<Value>> subProgresses) {
+		List<Value> values = new LinkedList<Value>();
+		for (Progress<Value> progress : subProgresses) {
+			values.add(progress.getMaxValue());
+		}
+
+		if (values.contains(null)) {
+			return null;
+		} else {
+			Adder<Value> adder = selectAdder(values.get(0));
+			return sum(values, adder);
+		}
+	}
+
+	private <Value extends Number> Value sum(List<Value> values,
+			Adder<Value> adder) {
+		Iterator<Value> iterator = values.iterator();
+		Value value = iterator.next();
+		while (iterator.hasNext()) {
+			value = adder.add(value, iterator.next());
+		}
+		return value;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <Value extends Number> Adder<Value> selectAdder(Value value) {
+		if (value == null) {
+			throw new NullPointerException(
+					"Cannot choose the right adder with a null value");
+		} else if (value instanceof Integer) {
+			return (Adder<Value>) new Adder<Integer>() {
+
+				@Override
+				public Integer add(Integer v1, Integer v2) {
+					checkNoNullOperand(v1, v2);
+					return v1 + v2;
+				}
+			};
+		} else {
+			throw new RuntimeException("Unmanaged type: " + value.getClass());
+		}
+	}
+
+	private <Value extends Number> void checkNoNullOperand(Value v1, Value v2) {
+		if (v1 == null || v2 == null) {
+			throw new NullPointerException("We cannot add null values: " + v1
+					+ " + " + v2);
+		} else {
+			// OK
+		}
+	}
+
+	private static interface Adder<Value extends Number> {
+		public Value add(Value v1, Value v2);
+	}
 }
