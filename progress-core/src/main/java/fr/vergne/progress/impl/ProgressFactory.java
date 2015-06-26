@@ -18,6 +18,22 @@ import fr.vergne.progress.Progress.ProgressListener;
 public class ProgressFactory {
 
 	/**
+	 * Creates a {@link Progress} instance which can be manually updated. See
+	 * the Javadoc of {@link ManualProgress} for further details.
+	 * 
+	 * @param startValue
+	 *            the initial {@link Value} of the {@link Progress}
+	 * @param maxValue
+	 *            the max {@link Value} of the {@link Progress} (can be
+	 *            <code>null</code>)
+	 * @return the {@link Progress} instance
+	 */
+	public <Value extends Number> ManualProgress<Value> createManualProgress(
+			Value startValue, Value maxValue) {
+		return new ManualProgress<Value>(startValue, maxValue);
+	}
+
+	/**
 	 * Creates a {@link Progress} instance which should be manually updated via
 	 * a {@link ProgressSetter} provided in argument.
 	 * 
@@ -29,7 +45,10 @@ public class ProgressFactory {
 	 *            the max {@link Value} of the {@link Progress} (can be
 	 *            <code>null</code>)
 	 * @return the {@link Progress} instance
+	 * @deprecated This method has been deprecated to prefer the use of
+	 *             {@link #createManualProgress(Number, Number)}.
 	 */
+	@Deprecated
 	public <Value extends Number> Progress<Value> createManualProgress(
 			final ProgressSetter<Value> setter, Value startValue, Value maxValue) {
 		final List<Value> values = new ArrayList<Value>(2);
@@ -104,6 +123,19 @@ public class ProgressFactory {
 		};
 	}
 
+	/**
+	 * This class is used by the method
+	 * {@link ProgressFactory#createManualProgress(ProgressSetter, Number, Number)}
+	 * which has been deprecated. Please refer to this method's Javadoc to know
+	 * how to replace it.
+	 * 
+	 * @author Matthieu Vergne <matthieu.vergne@gmail.com>
+	 * 
+	 * @param <Value>
+	 * @deprecated See
+	 *             {@link ProgressFactory#createManualProgress(ProgressSetter, Number, Number)}
+	 */
+	@Deprecated
 	public static class ProgressSetter<Value extends Number> {
 		private final Collection<ProgressListener<Value>> listeners = new HashSet<ProgressListener<Value>>();
 

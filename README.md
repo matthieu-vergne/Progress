@@ -15,16 +15,12 @@ It is available on Maven, so you can get the JAR or directly add it to your POM 
 
 Several samples are provided in `progress-sample`, but one can basically create a `Progress` instance:
 ```
-// Object used to update the progress instance
-ProgressSetter<Integer> setter = new ProgressSetter<Integer>();
-
 // Creation of a progress going from 0 to 10
-ProgressFactory factory = new ProgressFactory();
-Progress<Integer> progress = factory.createManualProgress(setter, 0, 10);
+ManualProgress<Integer> progress = new ManualProgress<Integer>(0, 10);
 ```
 update it when required:
 ```
-setter.setCurrentValue(5);
+progress.setCurrentValue(5);
 ```
 read it when required:
 ```

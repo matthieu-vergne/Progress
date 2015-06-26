@@ -9,20 +9,18 @@ import org.junit.Test;
 
 import fr.vergne.progress.Progress.ProgressListener;
 
-public class ProgressFactoryTest {
-
-	private final ProgressFactory factory = new ProgressFactory();
+public class ManualProgressTest {
 
 	@Test
 	public void testManualProgressCorretlyInitialized() {
-		ManualProgress<Integer> progress = factory.createManualProgress(5, 10);
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(5, 10);
 
 		assertEquals((Integer) 5, progress.getCurrentValue());
 	}
 
 	@Test
 	public void testManualProgressCorretlyUpdated() {
-		ManualProgress<Integer> progress = factory.createManualProgress(5, 10);
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(5, 10);
 
 		progress.setCurrentValue(3);
 		assertEquals((Integer) 3, progress.getCurrentValue());
@@ -34,7 +32,7 @@ public class ProgressFactoryTest {
 	@Test
 	public void testManualProgressCorretlyFinished() {
 		int max = 10;
-		ManualProgress<Integer> progress = factory.createManualProgress(0, max);
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(5, 10);
 
 		for (int i = 0; i < max; i++) {
 			progress.setCurrentValue(i);
@@ -46,7 +44,7 @@ public class ProgressFactoryTest {
 
 	@Test
 	public void testManualProgressCorretlyNotifies() {
-		ManualProgress<Integer> progress = factory.createManualProgress(5, 10);
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(5, 10);
 		final List<Integer> values = new ArrayList<Integer>(2);
 		values.add(null);
 		values.add(null);
@@ -81,8 +79,30 @@ public class ProgressFactoryTest {
 	}
 
 	@Test
+	public void testManualProgressThrowsExceptionOnNullValue() {
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(5, 10);
+
+		try {
+			progress.setCurrentValue(null);
+			fail("No exception thrown because null value");
+		} catch (NullPointerException e) {
+		}
+	}
+
+	@Test
+	public void testManualProgressThrowsExceptionOnNegativeValue() {
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(5, 10);
+
+		try {
+			progress.setCurrentValue(-20);
+			fail("No exception thrown because negative value");
+		} catch (IllegalArgumentException e) {
+		}
+	}
+
+	@Test
 	public void testManualProgressThrowsExceptionOnTooHighValue() {
-		ManualProgress<Integer> progress = factory.createManualProgress(5, 10);
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(5, 10);
 
 		try {
 			progress.setCurrentValue(20);
@@ -91,4 +111,32 @@ public class ProgressFactoryTest {
 		}
 	}
 
+	@Test
+	public void testManualProgressThrowsExceptionOnTooLowMaxValue() {
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(5, 10);
+
+		try {
+			progress.setMaxValue(1);
+			fail("No exception thrown because lower than current");
+		} catch (IllegalArgumentException e) {
+		}
+	}
+
+	@Test
+	public void testManualProgressThrowsExceptionOnNegativeMaxValue() {
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(5, 10);
+
+		try {
+			progress.setMaxValue(-1);
+			fail("No exception thrown because negative value");
+		} catch (IllegalArgumentException e) {
+		}
+	}
+
+	@Test
+	public void testManualProgressAcceptNoMax() {
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(5, null);
+
+		assertEquals(null, progress.getMaxValue());
+	}
 }
