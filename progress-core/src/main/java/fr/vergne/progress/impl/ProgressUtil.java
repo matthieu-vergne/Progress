@@ -149,7 +149,7 @@ public class ProgressUtil {
 
 			@Override
 			public void currentUpdate(Value value) {
-				writeProgress(progress, printer);
+				printer.println(ProgressUtil.toString(progress));
 			}
 
 			@Override
@@ -202,7 +202,7 @@ public class ProgressUtil {
 				@Override
 				public void run() {
 					synchronized (printer) {
-						writeProgress(progress, printer);
+						printer.println(ProgressUtil.toString(progress));
 						boolean isFinished = false;
 						do {
 							try {
@@ -216,12 +216,13 @@ public class ProgressUtil {
 							if (max != null && value.equals(max)) {
 								isFinished = true;
 								if (displayTermination) {
-									writeProgress(progress, printer);
+									printer.println(ProgressUtil
+											.toString(progress));
 								} else {
 									// do not display termination
 								}
 							} else {
-								writeProgress(progress, printer);
+								printer.println(ProgressUtil.toString(progress));
 							}
 						} while (!isFinished);
 					}
@@ -230,15 +231,25 @@ public class ProgressUtil {
 		}
 	}
 
-	private static <Value extends Number> void writeProgress(
-			Progress<Value> progress, PrintStream printer) {
+	/**
+	 * This method is a facility to obtain the current status of a
+	 * {@link Progress} into a {@link String}. It can be used for
+	 * {@link Object#toString()} methods or for any other display purpose.
+	 * 
+	 * @param progress
+	 *            the {@link Progress} to display
+	 * @return a string representation showing the current state of the
+	 *         {@link Progress}
+	 */
+	public static <Value extends Number> String toString(
+			Progress<Value> progress) {
 		Value value = progress.getCurrentValue();
 		Value max = progress.getMaxValue();
 		if (max == null) {
-			printer.println(value);
+			return value + "/?";
 		} else {
 			int percent = computeIntegerPercentage(value, max);
-			printer.println(value + "/" + max + " (" + percent + "%)");
+			return value + "/" + max + " (" + percent + "%)";
 		}
 	}
 

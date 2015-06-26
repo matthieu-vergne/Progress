@@ -99,15 +99,7 @@ public class ProgressFactory {
 
 			@Override
 			public String toString() {
-				Value value = getCurrentValue();
-				Value max = getMaxValue();
-				if (max == null) {
-					return value + "/?";
-				} else {
-					int percent = ProgressUtil.computeIntegerPercentage(value,
-							max);
-					return value + "/" + max + " (" + percent + "%)";
-				}
+				return ProgressUtil.toString(this);
 			}
 		};
 	}
