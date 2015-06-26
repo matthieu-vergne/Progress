@@ -26,6 +26,17 @@ update it when required:
 ```
 setter.setCurrentValue(5);
 ```
+read it when required:
+```
+// How many steps have been done?
+progress.getCurrentValue();
+
+// How many steps are needed before to finish?
+progress.getMaxValue();
+
+// Is it finished?
+progress.isFinished();
+```
 display it on the command line:
 ```
 // Display each time it is updated
