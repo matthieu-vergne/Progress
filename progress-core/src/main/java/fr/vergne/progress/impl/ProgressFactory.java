@@ -24,71 +24,71 @@ public class ProgressFactory {
 	 * @param setter
 	 *            the setter used to update the {@link Progress}
 	 * @param startValue
-	 *            the initial value of the {@link Progress}
+	 *            the initial {@link Value} of the {@link Progress}
 	 * @param maxValue
-	 *            the max value of the {@link Progress} (can be
+	 *            the max {@link Value} of the {@link Progress} (can be
 	 *            <code>null</code>)
 	 * @return the {@link Progress} instance
 	 */
-	public <T extends Number> Progress<T> createManualProgress(
-			final ProgressSetter<T> setter, T startValue, T maxValue) {
-		final List<T> values = new ArrayList<T>(2);
+	public <Value extends Number> Progress<Value> createManualProgress(
+			final ProgressSetter<Value> setter, Value startValue, Value maxValue) {
+		final List<Value> values = new ArrayList<Value>(2);
 		values.add(startValue);
 		values.add(maxValue);
-		final Collection<ProgressListener<T>> listeners = new HashSet<ProgressListener<T>>();
+		final Collection<ProgressListener<Value>> listeners = new HashSet<ProgressListener<Value>>();
 
-		final ProgressListener<T> listener = new ProgressListener<T>() {
+		final ProgressListener<Value> listener = new ProgressListener<Value>() {
 
 			@Override
-			public void currentUpdate(T value) {
-				T max = values.get(1);
+			public void currentUpdate(Value value) {
+				Value max = values.get(1);
 				if (max != null && value.doubleValue() > max.doubleValue()) {
 					throw new IllegalArgumentException("Value higher than max:"
 							+ value + " > " + max);
 				} else {
 					values.set(0, value);
-					for (ProgressListener<T> listener : listeners) {
+					for (ProgressListener<Value> listener : listeners) {
 						listener.currentUpdate(value);
 					}
 				}
 			}
 
 			@Override
-			public void maxUpdate(T maxValue) {
+			public void maxUpdate(Value maxValue) {
 				values.set(1, maxValue);
-				for (ProgressListener<T> listener : listeners) {
+				for (ProgressListener<Value> listener : listeners) {
 					listener.maxUpdate(maxValue);
 				}
 			}
 		};
 		setter.addProgressListener(listener);
 
-		return new Progress<T>() {
+		return new Progress<Value>() {
 
 			@Override
-			public T getCurrentValue() {
+			public Value getCurrentValue() {
 				return values.get(0);
 			}
 
 			@Override
-			public T getMaxValue() {
+			public Value getMaxValue() {
 				return values.get(1);
 			}
 
 			@Override
 			public boolean isFinished() {
-				T value = getCurrentValue();
-				T max = getMaxValue();
+				Value value = getCurrentValue();
+				Value max = getMaxValue();
 				return max != null && max.equals(value);
 			}
 
 			@Override
-			public void addProgressListener(ProgressListener<T> listener) {
+			public void addProgressListener(ProgressListener<Value> listener) {
 				listeners.add(listener);
 			}
 
 			@Override
-			public void removeUpdateListener(ProgressListener<T> listener) {
+			public void removeUpdateListener(ProgressListener<Value> listener) {
 				listeners.remove(listener);
 			}
 
@@ -99,26 +99,26 @@ public class ProgressFactory {
 		};
 	}
 
-	public static class ProgressSetter<T extends Number> {
-		private final Collection<ProgressListener<T>> listeners = new HashSet<ProgressListener<T>>();
+	public static class ProgressSetter<Value extends Number> {
+		private final Collection<ProgressListener<Value>> listeners = new HashSet<ProgressListener<Value>>();
 
-		public void setCurrentValue(T value) {
-			for (ProgressListener<T> listener : listeners) {
+		public void setCurrentValue(Value value) {
+			for (ProgressListener<Value> listener : listeners) {
 				listener.currentUpdate(value);
 			}
 		}
 
-		public void setMaxValue(T value) {
-			for (ProgressListener<T> listener : listeners) {
+		public void setMaxValue(Value value) {
+			for (ProgressListener<Value> listener : listeners) {
 				listener.maxUpdate(value);
 			}
 		}
 
-		private void addProgressListener(ProgressListener<T> listener) {
+		private void addProgressListener(ProgressListener<Value> listener) {
 			listeners.add(listener);
 		}
 
-		private void removeProgressListener(ProgressListener<T> listener) {
+		private void removeProgressListener(ProgressListener<Value> listener) {
 			listeners.remove(listener);
 		}
 

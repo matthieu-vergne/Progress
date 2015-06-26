@@ -32,8 +32,8 @@ public class ProgressUtil {
 	 *            should be closed manually.
 	 * @return the {@link JDialog} displaying the {@link Progress}
 	 */
-	public static <T extends Number> JDialog displayProgressOnDialog(
-			final Progress<T> progress, final boolean closeOnTermination) {
+	public static <Value extends Number> JDialog displayProgressOnDialog(
+			final Progress<Value> progress, final boolean closeOnTermination) {
 		final JDialog dialog = new JDialog();
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		dialog.setTitle("Running...");
@@ -42,22 +42,22 @@ public class ProgressUtil {
 		JProgressBar bar = displayProgressOnBar(progress);
 		dialog.add(bar);
 
-		progress.addProgressListener(new ProgressListener<T>() {
+		progress.addProgressListener(new ProgressListener<Value>() {
 
 			@Override
-			public void currentUpdate(T value) {
+			public void currentUpdate(Value value) {
 				checkAutoClose();
 			}
 
 			@Override
-			public void maxUpdate(T maxValue) {
+			public void maxUpdate(Value maxValue) {
 				checkAutoClose();
 			}
 
 			private void checkAutoClose() {
 				if (closeOnTermination) {
-					T value = progress.getCurrentValue();
-					T max = progress.getMaxValue();
+					Value value = progress.getCurrentValue();
+					Value max = progress.getMaxValue();
 					if (value != null && value.equals(max)) {
 						dialog.dispose();
 					} else {
@@ -82,8 +82,8 @@ public class ProgressUtil {
 	 *            the {@link Progress} to display
 	 * @return the {@link JProgressBar} displaying the {@link Progress}
 	 */
-	public static <T extends Number> JProgressBar displayProgressOnBar(
-			final Progress<T> progress) {
+	public static <Value extends Number> JProgressBar displayProgressOnBar(
+			final Progress<Value> progress) {
 		final JProgressBar bar = new JProgressBar();
 		bar.setStringPainted(true);
 		bar.setString("");
@@ -91,16 +91,16 @@ public class ProgressUtil {
 		configureBarMaximum(progress, bar);
 		updateString(progress, bar);
 
-		progress.addProgressListener(new ProgressListener<T>() {
+		progress.addProgressListener(new ProgressListener<Value>() {
 
 			@Override
-			public void currentUpdate(T value) {
+			public void currentUpdate(Value value) {
 				bar.setValue(value.intValue());
 				updateString(progress, bar);
 			}
 
 			@Override
-			public void maxUpdate(T maxValue) {
+			public void maxUpdate(Value maxValue) {
 				configureBarMaximum(progress, bar);
 				updateString(progress, bar);
 			}
@@ -108,10 +108,10 @@ public class ProgressUtil {
 		return bar;
 	}
 
-	private static <T extends Number> void updateString(Progress<T> progress,
-			JProgressBar bar) {
-		T value = progress.getCurrentValue();
-		T max = progress.getMaxValue();
+	private static <Value extends Number> void updateString(
+			Progress<Value> progress, JProgressBar bar) {
+		Value value = progress.getCurrentValue();
+		Value max = progress.getMaxValue();
 		if (max == null) {
 			bar.setString(value.toString());
 		} else {
@@ -120,9 +120,9 @@ public class ProgressUtil {
 		}
 	}
 
-	private static <T extends Number> void configureBarMaximum(
-			Progress<T> progress, JProgressBar bar) {
-		T max = progress.getMaxValue();
+	private static <Value extends Number> void configureBarMaximum(
+			Progress<Value> progress, JProgressBar bar) {
+		Value max = progress.getMaxValue();
 		if (max == null) {
 			bar.setIndeterminate(true);
 			bar.setMaximum(Integer.MAX_VALUE);
@@ -142,18 +142,18 @@ public class ProgressUtil {
 	 * @param stream
 	 *            the {@link OutputStream} on which it should be displayed
 	 */
-	public static <T extends Number> void displayProgressOnOutputStream(
-			final Progress<T> progress, OutputStream stream) {
+	public static <Value extends Number> void displayProgressOnOutputStream(
+			final Progress<Value> progress, OutputStream stream) {
 		final PrintStream printer = new PrintStream(stream);
-		progress.addProgressListener(new ProgressListener<T>() {
+		progress.addProgressListener(new ProgressListener<Value>() {
 
 			@Override
-			public void currentUpdate(T value) {
+			public void currentUpdate(Value value) {
 				writeProgress(progress, printer);
 			}
 
 			@Override
-			public void maxUpdate(T maxValue) {
+			public void maxUpdate(Value maxValue) {
 				printer.println("Progress finished when reaches " + maxValue);
 			}
 		});
@@ -171,9 +171,9 @@ public class ProgressUtil {
 	 * @param period
 	 *            the period of display in milliseconds
 	 */
-	public static <T extends Number> void displayProgressOnOutputStream(
-			final Progress<T> progress, OutputStream stream, final long period,
-			final boolean displayTermination) {
+	public static <Value extends Number> void displayProgressOnOutputStream(
+			final Progress<Value> progress, OutputStream stream,
+			final long period, final boolean displayTermination) {
 		if (progress == null) {
 			throw new NullPointerException("No progress provided");
 		} else if (stream == null) {
@@ -183,15 +183,15 @@ public class ProgressUtil {
 					"The period should be strictly positive");
 		} else {
 			final PrintStream printer = new PrintStream(stream);
-			progress.addProgressListener(new ProgressListener<T>() {
+			progress.addProgressListener(new ProgressListener<Value>() {
 
 				@Override
-				public void currentUpdate(T value) {
+				public void currentUpdate(Value value) {
 					// nothing to do
 				}
 
 				@Override
-				public void maxUpdate(T maxValue) {
+				public void maxUpdate(Value maxValue) {
 					printer.println("Progress finished when reaches "
 							+ maxValue);
 				}
@@ -211,8 +211,8 @@ public class ProgressUtil {
 								e.printStackTrace();
 							}
 
-							T value = progress.getCurrentValue();
-							T max = progress.getMaxValue();
+							Value value = progress.getCurrentValue();
+							Value max = progress.getMaxValue();
 							if (max != null && value.equals(max)) {
 								isFinished = true;
 								if (displayTermination) {
@@ -230,10 +230,10 @@ public class ProgressUtil {
 		}
 	}
 
-	private static <T extends Number> void writeProgress(Progress<T> progress,
-			PrintStream printer) {
-		T value = progress.getCurrentValue();
-		T max = progress.getMaxValue();
+	private static <Value extends Number> void writeProgress(
+			Progress<Value> progress, PrintStream printer) {
+		Value value = progress.getCurrentValue();
+		Value max = progress.getMaxValue();
 		if (max == null) {
 			printer.println(value);
 		} else {
@@ -242,7 +242,8 @@ public class ProgressUtil {
 		}
 	}
 
-	private static <T extends Number> int computePercent(T value, T max) {
+	private static <Value extends Number> int computePercent(Value value,
+			Value max) {
 		return (int) Math.floor(100 * value.doubleValue() / max.doubleValue());
 	}
 }
