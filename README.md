@@ -11,7 +11,7 @@ It is available on [Maven](http://search.maven.org/#search|ga|1|a%3A%22progress-
 <dependency>
     <groupId>fr.matthieu-vergne</groupId>
     <artifactId>progress-core</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
