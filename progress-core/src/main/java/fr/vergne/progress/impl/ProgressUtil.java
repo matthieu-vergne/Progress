@@ -115,7 +115,7 @@ public class ProgressUtil {
 		if (max == null) {
 			bar.setString(value.toString());
 		} else {
-			int percent = computePercent(value, max);
+			int percent = computeIntegerPercentage(value, max);
 			bar.setString(value + "/" + max + " (" + percent + "%)");
 		}
 	}
@@ -237,13 +237,25 @@ public class ProgressUtil {
 		if (max == null) {
 			printer.println(value);
 		} else {
-			int percent = computePercent(value, max);
+			int percent = computeIntegerPercentage(value, max);
 			printer.println(value + "/" + max + " (" + percent + "%)");
 		}
 	}
 
-	private static <Value extends Number> int computePercent(Value value,
-			Value max) {
+	/**
+	 * This method is the usual computation of percentage for {@link Progress}
+	 * instances, which takes the current and maximum {@link Value} and infer
+	 * the integer percentage within [0;100]. The percentage is floored, meaning
+	 * that the percentage reach a given value when this value has been actually
+	 * reached. For instance, it reaches 100 only when the task is actually
+	 * finished (value = max).
+	 * 
+	 * @param value
+	 * @param max
+	 * @return the integer percentage in [0;100]
+	 */
+	public static <Value extends Number> int computeIntegerPercentage(
+			Value value, Value max) {
 		return (int) Math.floor(100 * value.doubleValue() / max.doubleValue());
 	}
 }
