@@ -27,7 +27,7 @@ public class CombinedSample {
 
 		// Create the global progress
 		Progress<Integer> global = factory
-				.createCombinedProgress(subProgresses);
+				.createGlobalAdditiveProgress(subProgresses);
 
 		// Display each progress on the standard output for details
 		ProgressUtil.displayProgressOnOutputStream("p1: ", p1, System.out);

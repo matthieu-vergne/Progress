@@ -97,12 +97,12 @@ public class ProgressFactoryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCombinedProgressManageInteger() {
+	public void testGlobalAdditiveProgressManagesInteger() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(1, 10);
 		ManualProgress<Integer> p2 = factory.createManualProgress(2, 5);
 		ManualProgress<Integer> p3 = factory.createManualProgress(3, 3);
-		Progress<Integer> progress = factory.createCombinedProgress(Arrays
-				.asList(p1, p2, p3));
+		Progress<Integer> progress = factory
+				.createGlobalAdditiveProgress(Arrays.asList(p1, p2, p3));
 
 		assertEquals((Integer) 6, progress.getCurrentValue());
 		assertEquals((Integer) 18, progress.getMaxValue());
@@ -110,12 +110,12 @@ public class ProgressFactoryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCombinedProgressManageLong() {
+	public void testGlobalAdditiveProgressManagesLong() {
 		ManualProgress<Long> p1 = factory.createManualProgress(1L, 10L);
 		ManualProgress<Long> p2 = factory.createManualProgress(2L, 5L);
 		ManualProgress<Long> p3 = factory.createManualProgress(3L, 3L);
-		Progress<Long> progress = factory.createCombinedProgress(Arrays.asList(
-				p1, p2, p3));
+		Progress<Long> progress = factory.createGlobalAdditiveProgress(Arrays
+				.asList(p1, p2, p3));
 
 		assertEquals((Long) 6L, progress.getCurrentValue());
 		assertEquals((Long) 18L, progress.getMaxValue());
@@ -123,14 +123,14 @@ public class ProgressFactoryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCombinedProgressManageShort() {
+	public void testGlobalAdditiveProgressManagesShort() {
 		ManualProgress<Short> p1 = factory.createManualProgress((short) 1,
 				(short) 10);
 		ManualProgress<Short> p2 = factory.createManualProgress((short) 2,
 				(short) 5);
 		ManualProgress<Short> p3 = factory.createManualProgress((short) 3,
 				(short) 3);
-		Progress<Short> progress = factory.createCombinedProgress(Arrays
+		Progress<Short> progress = factory.createGlobalAdditiveProgress(Arrays
 				.asList(p1, p2, p3));
 
 		assertEquals((Short) (short) 6, progress.getCurrentValue());
@@ -139,11 +139,11 @@ public class ProgressFactoryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCombinedProgressManageFloat() {
+	public void testGlobalAdditiveProgressManagesFloat() {
 		ManualProgress<Float> p1 = factory.createManualProgress(1.3F, 10.1F);
 		ManualProgress<Float> p2 = factory.createManualProgress(2.2F, 5.2F);
 		ManualProgress<Float> p3 = factory.createManualProgress(3.1F, 3.3F);
-		Progress<Float> progress = factory.createCombinedProgress(Arrays
+		Progress<Float> progress = factory.createGlobalAdditiveProgress(Arrays
 				.asList(p1, p2, p3));
 
 		assertEquals((Float) 6.6F, progress.getCurrentValue());
@@ -152,11 +152,11 @@ public class ProgressFactoryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCombinedProgressManageDouble() {
+	public void testGlobalAdditiveProgressManagesDouble() {
 		ManualProgress<Double> p1 = factory.createManualProgress(1.3, 10.1);
 		ManualProgress<Double> p2 = factory.createManualProgress(2.2, 5.2);
 		ManualProgress<Double> p3 = factory.createManualProgress(3.1, 3.3);
-		Progress<Double> progress = factory.createCombinedProgress(Arrays
+		Progress<Double> progress = factory.createGlobalAdditiveProgress(Arrays
 				.asList(p1, p2, p3));
 
 		assertEquals((Double) 6.6, progress.getCurrentValue());
@@ -165,15 +165,15 @@ public class ProgressFactoryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCombinedProgressManageByte() {
+	public void testGlobalAdditiveProgressManagesByte() {
 		ManualProgress<Byte> p1 = factory.createManualProgress((byte) 1,
 				(byte) 10);
 		ManualProgress<Byte> p2 = factory.createManualProgress((byte) 2,
 				(byte) 5);
 		ManualProgress<Byte> p3 = factory.createManualProgress((byte) 3,
 				(byte) 3);
-		Progress<Byte> progress = factory.createCombinedProgress(Arrays.asList(
-				p1, p2, p3));
+		Progress<Byte> progress = factory.createGlobalAdditiveProgress(Arrays
+				.asList(p1, p2, p3));
 
 		assertEquals((Byte) (byte) 6, progress.getCurrentValue());
 		assertEquals((Byte) (byte) 18, progress.getMaxValue());
@@ -181,15 +181,15 @@ public class ProgressFactoryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCombinedProgressManageBigInteger() {
+	public void testGlobalAdditiveProgressManagesBigInteger() {
 		ManualProgress<BigInteger> p1 = factory.createManualProgress(
 				new BigInteger("1"), new BigInteger("10"));
 		ManualProgress<BigInteger> p2 = factory.createManualProgress(
 				new BigInteger("2"), new BigInteger("5"));
 		ManualProgress<BigInteger> p3 = factory.createManualProgress(
 				new BigInteger("3"), new BigInteger("3"));
-		Progress<BigInteger> progress = factory.createCombinedProgress(Arrays
-				.asList(p1, p2, p3));
+		Progress<BigInteger> progress = factory
+				.createGlobalAdditiveProgress(Arrays.asList(p1, p2, p3));
 
 		assertEquals(new BigInteger("6"), progress.getCurrentValue());
 		assertEquals(new BigInteger("18"), progress.getMaxValue());
@@ -197,15 +197,15 @@ public class ProgressFactoryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCombinedProgressManageBigDecimal() {
+	public void testGlobalAdditiveProgressManagesBigDecimal() {
 		ManualProgress<BigDecimal> p1 = factory.createManualProgress(
 				new BigDecimal("1.3"), new BigDecimal("10.1"));
 		ManualProgress<BigDecimal> p2 = factory.createManualProgress(
 				new BigDecimal("2.2"), new BigDecimal("5.2"));
 		ManualProgress<BigDecimal> p3 = factory.createManualProgress(
 				new BigDecimal("3.1"), new BigDecimal("3.3"));
-		Progress<BigDecimal> progress = factory.createCombinedProgress(Arrays
-				.asList(p1, p2, p3));
+		Progress<BigDecimal> progress = factory
+				.createGlobalAdditiveProgress(Arrays.asList(p1, p2, p3));
 
 		assertEquals(new BigDecimal("6.6"), progress.getCurrentValue());
 		assertEquals(new BigDecimal("18.6"), progress.getMaxValue());
@@ -213,12 +213,12 @@ public class ProgressFactoryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCombinedProgressProvideCorrectCurrentValue() {
+	public void testGlobalAdditiveProgressProvidesCorrectCurrentValue() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
 		ManualProgress<Integer> p2 = factory.createManualProgress(0, 5);
 		ManualProgress<Integer> p3 = factory.createManualProgress(0, 3);
-		Progress<Integer> progress = factory.createCombinedProgress(Arrays
-				.asList(p1, p2, p3));
+		Progress<Integer> progress = factory
+				.createGlobalAdditiveProgress(Arrays.asList(p1, p2, p3));
 
 		assertEquals((Integer) 0, progress.getCurrentValue());
 		p1.setCurrentValue(3);
@@ -231,12 +231,12 @@ public class ProgressFactoryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCombinedProgressProvideCorrectMaxValue() {
+	public void testGlobalAdditiveProgressProvidesCorrectMaxValue() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
 		ManualProgress<Integer> p2 = factory.createManualProgress(0, 5);
 		ManualProgress<Integer> p3 = factory.createManualProgress(0, 3);
-		Progress<Integer> progress = factory.createCombinedProgress(Arrays
-				.asList(p1, p2, p3));
+		Progress<Integer> progress = factory
+				.createGlobalAdditiveProgress(Arrays.asList(p1, p2, p3));
 
 		assertEquals((Integer) 18, progress.getMaxValue());
 		p1.setMaxValue(null);
@@ -247,12 +247,12 @@ public class ProgressFactoryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCombinedProgressProvideCorrectFinishedState() {
+	public void testGlobalAdditiveProgressProvidesCorrectFinishedState() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
 		ManualProgress<Integer> p2 = factory.createManualProgress(0, 5);
 		ManualProgress<Integer> p3 = factory.createManualProgress(0, 3);
-		Progress<Integer> progress = factory.createCombinedProgress(Arrays
-				.asList(p1, p2, p3));
+		Progress<Integer> progress = factory
+				.createGlobalAdditiveProgress(Arrays.asList(p1, p2, p3));
 
 		assertFalse(progress.isFinished());
 		p1.finish();
@@ -273,12 +273,12 @@ public class ProgressFactoryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCombinedProgressProvideCorrectNotifications() {
+	public void testGlobalAdditiveProgressProvidesCorrectNotifications() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
 		ManualProgress<Integer> p2 = factory.createManualProgress(0, 5);
 		ManualProgress<Integer> p3 = factory.createManualProgress(0, 3);
-		Progress<Integer> progress = factory.createCombinedProgress(Arrays
-				.asList(p1, p2, p3));
+		Progress<Integer> progress = factory
+				.createGlobalAdditiveProgress(Arrays.asList(p1, p2, p3));
 
 		final List<Integer> notifiedValues = new ArrayList<Integer>(2);
 		notifiedValues.add(null);

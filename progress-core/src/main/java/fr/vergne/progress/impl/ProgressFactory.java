@@ -166,18 +166,31 @@ public class ProgressFactory {
 	}
 
 	/**
+	 * @deprecated Use {@link #createGlobalAdditiveProgress(Collection)} to have
+	 *             exactly the same behavior, or another
+	 *             <code>createGlobalXxxProgress()</code> For a different kind
+	 *             of global {@link Progress}.
+	 */
+	@Deprecated
+	public <Value extends Number> Progress<Value> createCombinedProgress(
+			final Collection<? extends Progress<Value>> subProgresses) {
+		return createGlobalAdditiveProgress(subProgresses);
+	}
+
+	/**
 	 * This method aims at providing a global {@link Progress} over a collection
-	 * of more specific {@link Progress} instances. The idea is that the current
-	 * (resp. max) {@link Value} of this {@link Progress} equals the sum of the
-	 * current (resp. max) {@link Value}s of each sub-{@link Progress}.
-	 * consequently, the {@link Progress} returned is finished only when all the
-	 * sub-{@link Progress} instances are also finished.
+	 * of more specific {@link Progress} instances by adding them: the current
+	 * {@link Value} of the global {@link Progress} equals the sum of the
+	 * current {@link Value}s of each sub-{@link Progress}. Consequently, the
+	 * max {@link Value} of the global {@link Progress} is also the sum of the
+	 * max {@link Value}s of each of them, and it finishes only when they are
+	 * all finished.
 	 * 
 	 * @param subProgresses
 	 *            all the {@link Progress} instances to cover
 	 * @return the global {@link Progress}
 	 */
-	public <Value extends Number> Progress<Value> createCombinedProgress(
+	public <Value extends Number> Progress<Value> createGlobalAdditiveProgress(
 			final Collection<? extends Progress<Value>> subProgresses) {
 		if (subProgresses == null || subProgresses.isEmpty()) {
 			throw new IllegalArgumentException("No sub-progresses provided: "

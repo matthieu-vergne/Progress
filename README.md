@@ -46,7 +46,7 @@ The `ProgressFactory` provides a simple way to combine several `Progress` instan
 Collection<Progress<Integer>> subProgresses = ...;
 
 // Combine them into a global one
-Progress<Integer> global = factory.createCombinedProgress(subProgresses);
+Progress<Integer> global = factory.createGlobalAdditiveProgress(subProgresses);
 ```
 
 The global `Progress` can be used like any other ones, so you can get its current value, max value and finished state, among other things. You can look at a [sample using a combined `Progress`](https://github.com/matthieu-vergne/Progress/blob/master/progress-samples/src/main/java/fr/vergne/progress/sample/CombinedSample.java) for a more complete example.
