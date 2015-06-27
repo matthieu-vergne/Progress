@@ -12,8 +12,7 @@ public class CommandLineSampleWithRegularDisplay {
 		ManualProgress<Integer> progress = new ManualProgress<Integer>(0, 1000);
 
 		// Display the progress evolution on the standard output
-		ProgressUtil.displayProgressOnOutputStream(progress, System.out, 1000,
-				false);
+		ProgressUtil.displayProgressOnOutputStream(progress, System.out, 1000);
 
 		// Run the task until finished
 		System.out.println("Start running...");

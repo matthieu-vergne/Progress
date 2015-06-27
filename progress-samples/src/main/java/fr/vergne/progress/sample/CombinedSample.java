@@ -37,7 +37,7 @@ public class CombinedSample {
 				System.out);
 
 		// Display the global progress graphically for overview
-		ProgressUtil.displayProgressOnDialog(global, false);
+		ProgressUtil.createJDialog(global, true, false);
 
 		// Run the task until finished
 		System.out.println("Start running...");

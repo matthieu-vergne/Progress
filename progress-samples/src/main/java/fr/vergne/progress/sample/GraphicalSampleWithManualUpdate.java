@@ -12,7 +12,7 @@ public class GraphicalSampleWithManualUpdate {
 		ManualProgress<Integer> progress = new ManualProgress<Integer>(0, 10);
 
 		// Display the progress evolution graphically
-		ProgressUtil.displayProgressOnDialog(progress, false);
+		ProgressUtil.createJDialog(progress, true, false);
 
 		// Run the task until finished
 		System.out.println("Start running...");
