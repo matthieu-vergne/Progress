@@ -11,7 +11,7 @@ It is available on [Maven](http://search.maven.org/#search|ga|1|a%3A%22progress-
 <dependency>
     <groupId>fr.matthieu-vergne</groupId>
     <artifactId>progress-core</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 ```
 
@@ -62,20 +62,31 @@ ProgressUtil.displayProgressOnOutputStream(progress, System.out);
 or display it on a regular basis:
 ```
 // Display every second
-ProgressUtil.displayProgressOnOutputStream(progress, System.out, 1000, false);
+ProgressUtil.displayProgressOnOutputStream(progress, System.out, 1000);
 ```
-You can also display it in a JDialog for graphical display:
+
+You can also display it in a `JDialog` for graphical display:
 ```
-ProgressUtil.displayProgressOnDialog(progress, false);
+ProgressUtil.displayProgressOnJDialog(progress);
 ```
+or go further in details by specifying custom display:
+```
+// Display every update
+ProgressUtil.displayProgress(progress, displayerForValueUpdate, displayerforMaxUpdate);
+
+// Display on a regular basis
+ProgressUtil.displayProgress(progress, period, launchDisplayer, regularDisplayer, terminationDisplayer);
+```
+
+Many variations are provided to adapt to different needs, but they generally call the two above.
 
 ## And more...
 
 Other facilities are supported, like:
 - set the maximum value only when it is known,
-- register a `ProgressListener` to be informed when a `Progress` is updated,
+- register a `ProgressListener` to be informed in real time when a `Progress` is updated,
 - build a `JProgressBar` to manually insert it into an existing Swing GUI,
 - use any kind of `Number`, like `Double` or even `BigInteger`,
 - etc.
 
-Of course, feedbacks are welcome! {^_°}
+But of course, it is far to be complete. So feedbacks are welcome! {^_°}
