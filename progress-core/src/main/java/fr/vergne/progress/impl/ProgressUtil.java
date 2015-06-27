@@ -491,11 +491,18 @@ public class ProgressUtil {
 		Value value = progress.getCurrentValue();
 		Value max = progress.getMaxValue();
 		if (max == null) {
-			return value + "/?";
+			return reduceDecimals(value, 3) + "/?";
 		} else {
 			int percent = computeIntegerPercentage(value, max);
-			return value + "/" + max + " (" + percent + "%)";
+			return reduceDecimals(value, 3) + "/" + reduceDecimals(max, 3) + " (" + percent + "%)";
 		}
+	}
+	
+	private static String reduceDecimals(Number value, int decimals) {
+		String string = ""+value;
+		string = string.replaceAll("(\\.\\d{"+decimals+"})\\d+", "$1");
+		string = string.replaceAll("\\.?0+$", "");
+		return string;
 	}
 
 	/**
