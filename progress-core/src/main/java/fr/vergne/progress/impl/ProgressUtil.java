@@ -335,7 +335,6 @@ public class ProgressUtil {
 			final Progress<Value> progress) {
 		final JProgressBar bar = new JProgressBar();
 		bar.setStringPainted(true);
-		bar.setString("");
 		bar.setValue(0);
 		configureBarMaximum(progress, bar);
 		updateString(progress, bar);
@@ -344,7 +343,8 @@ public class ProgressUtil {
 
 			@Override
 			public void currentUpdate(Value value) {
-				bar.setValue(value.intValue());
+				// we multiply by 100 to manage decimals
+				bar.setValue((int) (value.doubleValue() * 100));
 				updateString(progress, bar);
 			}
 
@@ -483,7 +483,8 @@ public class ProgressUtil {
 			bar.setMaximum(Integer.MAX_VALUE);
 		} else {
 			bar.setIndeterminate(false);
-			bar.setMaximum(max.intValue());
+			// we multiply by 100 to manage decimals
+			bar.setMaximum(max.intValue() * 100);
 		}
 	}
 
