@@ -337,7 +337,7 @@ public class ProgressUtil {
 		bar.setStringPainted(true);
 		bar.setValue(0);
 		configureBarMaximum(progress, bar);
-		updateString(progress, bar);
+		bar.setString(toString(progress));
 
 		progress.addProgressListener(new ProgressListener<Value>() {
 
@@ -345,13 +345,13 @@ public class ProgressUtil {
 			public void currentUpdate(Value value) {
 				// we multiply by 100 to manage decimals
 				bar.setValue((int) (value.doubleValue() * 100));
-				updateString(progress, bar);
+				bar.setString(ProgressUtil.toString(progress));
 			}
 
 			@Override
 			public void maxUpdate(Value maxValue) {
 				configureBarMaximum(progress, bar);
-				updateString(progress, bar);
+				bar.setString(ProgressUtil.toString(progress));
 			}
 		});
 		return bar;
@@ -462,18 +462,6 @@ public class ProgressUtil {
 	/*******************************************************************/
 	/*******************************************************************/
 	/*******************************************************************/
-
-	private static <Value extends Number> void updateString(
-			Progress<Value> progress, JProgressBar bar) {
-		Value value = progress.getCurrentValue();
-		Value max = progress.getMaxValue();
-		if (max == null) {
-			bar.setString(value.toString());
-		} else {
-			int percent = computeIntegerPercentage(value, max);
-			bar.setString(value + "/" + max + " (" + percent + "%)");
-		}
-	}
 
 	private static <Value extends Number> void configureBarMaximum(
 			Progress<Value> progress, JProgressBar bar) {
