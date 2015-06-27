@@ -200,8 +200,8 @@ public class ProgressFactory {
 					subProgresses);
 
 			final List<Value> values = new ArrayList<Value>(2);
-			values.add(computeCurrentValue(fixedProgresses));
-			values.add(computeMaxValue(fixedProgresses));
+			values.add(computeAdditiveCurrentValue(fixedProgresses));
+			values.add(computeAdditiveMaxValue(fixedProgresses));
 
 			final Collection<ProgressListener<Value>> listeners = new HashSet<Progress.ProgressListener<Value>>();
 
@@ -209,7 +209,7 @@ public class ProgressFactory {
 
 				@Override
 				public void currentUpdate(Value value) {
-					Value globalValue = computeCurrentValue(fixedProgresses);
+					Value globalValue = computeAdditiveCurrentValue(fixedProgresses);
 					values.set(0, globalValue);
 					for (ProgressListener<Value> listener : listeners) {
 						listener.currentUpdate(globalValue);
@@ -218,7 +218,7 @@ public class ProgressFactory {
 
 				@Override
 				public void maxUpdate(Value maxValue) {
-					Value globalValue = computeMaxValue(fixedProgresses);
+					Value globalValue = computeAdditiveMaxValue(fixedProgresses);
 					values.set(1, globalValue);
 					for (ProgressListener<Value> listener : listeners) {
 						listener.maxUpdate(globalValue);
@@ -268,7 +268,7 @@ public class ProgressFactory {
 		}
 	}
 
-	private <Value extends Number> Value computeCurrentValue(
+	private <Value extends Number> Value computeAdditiveCurrentValue(
 			final Collection<? extends Progress<Value>> subProgresses) {
 		List<Value> values = new LinkedList<Value>();
 		for (Progress<Value> progress : subProgresses) {
@@ -278,7 +278,7 @@ public class ProgressFactory {
 		return sum(values, adder);
 	}
 
-	private <Value extends Number> Value computeMaxValue(
+	private <Value extends Number> Value computeAdditiveMaxValue(
 			final Collection<? extends Progress<Value>> subProgresses) {
 		List<Value> values = new LinkedList<Value>();
 		for (Progress<Value> progress : subProgresses) {
