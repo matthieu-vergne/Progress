@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Test;
@@ -313,6 +314,35 @@ public class ProgressFactoryTest {
 		assertEquals(progress.getMaxValue(), notifiedValues.get(1));
 		p3.setMaxValue(5);
 		assertEquals(progress.getMaxValue(), notifiedValues.get(1));
+	}
+
+	@Test
+	public void testGlobalAdditiveProgressRobustToSubProgressListModifications() {
+		List<ManualProgress<Integer>> subProgresses = new LinkedList<ManualProgress<Integer>>();
+		subProgresses.add(factory.createManualProgress(1, 10));
+		subProgresses.add(factory.createManualProgress(2, 5));
+		subProgresses.add(factory.createManualProgress(3, 3));
+
+		Progress<Integer> progress = factory
+				.createGlobalAdditiveProgress(subProgresses);
+		Integer currentReference = progress.getCurrentValue();
+		Integer maxReference = progress.getMaxValue();
+
+		// Robust through computation
+		subProgresses.add(factory.createManualProgress(5, 10));
+		assertEquals(currentReference, progress.getCurrentValue());
+		assertEquals(maxReference, progress.getMaxValue());
+
+		// Robust through notifications
+		for (ManualProgress<Integer> subProgress : subProgresses) {
+			subProgress.setMaxValue(subProgress.getMaxValue() + 1);
+			subProgress.setCurrentValue(subProgress.getCurrentValue() + 1);
+
+			subProgress.setCurrentValue(subProgress.getCurrentValue() - 1);
+			subProgress.setMaxValue(subProgress.getMaxValue() - 1);
+		}
+		assertEquals(currentReference, progress.getCurrentValue());
+		assertEquals(maxReference, progress.getMaxValue());
 	}
 
 }

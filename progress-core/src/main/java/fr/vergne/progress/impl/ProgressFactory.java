@@ -196,9 +196,12 @@ public class ProgressFactory {
 			throw new IllegalArgumentException("No sub-progresses provided: "
 					+ subProgresses);
 		} else {
+			final Collection<Progress<Value>> fixedProgresses = new LinkedList<Progress<Value>>(
+					subProgresses);
+
 			final List<Value> values = new ArrayList<Value>(2);
-			values.add(computeCurrentValue(subProgresses));
-			values.add(computeMaxValue(subProgresses));
+			values.add(computeCurrentValue(fixedProgresses));
+			values.add(computeMaxValue(fixedProgresses));
 
 			final Collection<ProgressListener<Value>> listeners = new HashSet<Progress.ProgressListener<Value>>();
 
@@ -206,7 +209,7 @@ public class ProgressFactory {
 
 				@Override
 				public void currentUpdate(Value value) {
-					Value globalValue = computeCurrentValue(subProgresses);
+					Value globalValue = computeCurrentValue(fixedProgresses);
 					values.set(0, globalValue);
 					for (ProgressListener<Value> listener : listeners) {
 						listener.currentUpdate(globalValue);
@@ -215,7 +218,7 @@ public class ProgressFactory {
 
 				@Override
 				public void maxUpdate(Value maxValue) {
-					Value globalValue = computeMaxValue(subProgresses);
+					Value globalValue = computeMaxValue(fixedProgresses);
 					values.set(1, globalValue);
 					for (ProgressListener<Value> listener : listeners) {
 						listener.maxUpdate(globalValue);
@@ -223,7 +226,7 @@ public class ProgressFactory {
 				}
 			};
 
-			for (Progress<Value> subprogress : subProgresses) {
+			for (Progress<Value> subprogress : fixedProgresses) {
 				subprogress.addProgressListener(globalListener);
 			}
 
@@ -257,7 +260,7 @@ public class ProgressFactory {
 
 				@Override
 				protected void finalize() throws Throwable {
-					for (Progress<Value> subprogress : subProgresses) {
+					for (Progress<Value> subprogress : fixedProgresses) {
 						subprogress.removeProgressListener(globalListener);
 					}
 				}
