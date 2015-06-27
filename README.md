@@ -40,7 +40,7 @@ progress.isFinished();
 
 ## Combine several tasks into a global one
 
-The `ProgressFactory` provides a simple way to combine several `Progress` instances into a single one:
+The `ProgressFactory` provides several methods to combine several `Progress` instances into a single one, all following this pattern:
 ```
 // Create a progress for each sub-task
 Collection<Progress<Integer>> subProgresses = ...;
@@ -49,7 +49,7 @@ Collection<Progress<Integer>> subProgresses = ...;
 Progress<Integer> global = factory.createGlobalAdditiveProgress(subProgresses);
 ```
 
-The global `Progress` can be used like any other ones, so you can get its current value, max value and finished state, among other things. You can look at a [sample using a combined `Progress`](https://github.com/matthieu-vergne/Progress/blob/master/progress-samples/src/main/java/fr/vergne/progress/sample/CombinedSample.java) for a more complete example.
+The global `Progress` can be used like any other ones, so you can get its current value, max value and finished state, among other things. You can look at a [sample using a combined `Progress`](https://github.com/matthieu-vergne/Progress/blob/master/progress-samples/src/main/java/fr/vergne/progress/sample/CombinedSampleOnParallelTasks.java) for a more complete example. You can use different kinds of global `Progress` depending on your needs. For instance, the *additive* one simply sum up all the values (the max value of the global one is the sum of the max value of each sub-`Progress`), while the *counting* one abstract from the details (the global max value is the number of sub-`Progress` instances covered, and the advancement of each of them add a value in [0;1] to the global current value).
 
 ## Display a progress
 

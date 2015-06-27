@@ -2,12 +2,15 @@ package fr.vergne.progress.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import fr.vergne.progress.Progress;
 import fr.vergne.progress.Progress.ProgressListener;
@@ -268,6 +271,123 @@ public class ProgressFactory {
 		}
 	}
 
+	/**
+	 * This method aims at providing a global {@link Progress} over a collection
+	 * of more specific {@link Progress} instances by counting them: the current
+	 * {@link Value} of the global {@link Progress} sums the progress ratio of
+	 * each sub-{@link Progress} (current {@link Value} divided by max
+	 * {@link Value}), such that a finished sub-{@link Progress} adds exactly 1.
+	 * Consequently, the max {@link Value} of the global {@link Progress} is the
+	 * number of sub-{@link Progress} instances managed, and it finishes only
+	 * when all the sub-{@link Progress} instances are finished.
+	 * 
+	 * @param subProgresses
+	 *            all the {@link Progress} instances to cover
+	 * @return the global {@link Progress}
+	 */
+	public Progress<Double> createGlobalCountingProgress(
+			Collection<? extends Progress<? extends Number>> subProgresses) {
+		if (subProgresses == null || subProgresses.isEmpty()) {
+			throw new IllegalArgumentException("No sub-progresses provided: "
+					+ subProgresses);
+		} else {
+			final Collection<Progress<? extends Number>> fixedProgresses = new LinkedList<Progress<? extends Number>>(
+					subProgresses);
+
+			final List<Double> values = new ArrayList<Double>(2);
+			values.add(computeCountingCurrentValue(fixedProgresses));
+			values.add((double) fixedProgresses.size());
+
+			final Collection<ProgressListener<Double>> listeners = new HashSet<Progress.ProgressListener<Double>>();
+
+			final ProgressListener<Number> globalListener = new ProgressListener<Number>() {
+
+				@Override
+				public void currentUpdate(Number value) {
+					double globalValue = computeCountingCurrentValue(fixedProgresses);
+					values.set(0, globalValue);
+					for (ProgressListener<Double> listener : listeners) {
+						listener.currentUpdate(globalValue);
+					}
+				}
+
+				@Override
+				public void maxUpdate(Number maxValue) {
+					// The current value should change due to ratios
+					currentUpdate(null);
+					// But surely the max value remains constant
+					// so no computation/notification
+				}
+			};
+
+			final ProgressListenerMap listenerMap = new ProgressListenerMap();
+			for (Progress<? extends Number> subprogress : fixedProgresses) {
+				listen(subprogress, globalListener, listenerMap);
+			}
+
+			return new Progress<Double>() {
+
+				@Override
+				public Double getCurrentValue() {
+					return values.get(0);
+				}
+
+				@Override
+				public Double getMaxValue() {
+					return values.get(1);
+				}
+
+				@Override
+				public boolean isFinished() {
+					return getCurrentValue().equals(getMaxValue());
+				}
+
+				@Override
+				public void addProgressListener(
+						ProgressListener<Double> listener) {
+					listeners.add(listener);
+				}
+
+				@Override
+				public void removeProgressListener(
+						ProgressListener<Double> listener) {
+					listeners.remove(listener);
+				}
+
+				@Override
+				protected void finalize() throws Throwable {
+					for (Progress<? extends Number> subprogress : fixedProgresses) {
+						unlisten(subprogress, listenerMap);
+					}
+				}
+			};
+		}
+	}
+
+	private <Value extends Number> void unlisten(Progress<Value> subprogress,
+			ProgressListenerMap listenerMap) {
+		subprogress.removeProgressListener(listenerMap.get(subprogress));
+	}
+
+	private <Value extends Number> void listen(Progress<Value> subprogress,
+			final ProgressListener<Number> globalListener,
+			ProgressListenerMap listenerMap) {
+		ProgressListener<Value> listener = new ProgressListener<Value>() {
+
+			@Override
+			public void currentUpdate(Value value) {
+				globalListener.currentUpdate(value);
+			}
+
+			@Override
+			public void maxUpdate(Value maxValue) {
+				globalListener.maxUpdate(maxValue);
+			}
+		};
+		subprogress.addProgressListener(listener);
+		listenerMap.put(subprogress, listener);
+	}
+
 	private <Value extends Number> Value computeAdditiveCurrentValue(
 			final Collection<? extends Progress<Value>> subProgresses) {
 		List<Value> values = new LinkedList<Value>();
@@ -276,6 +396,24 @@ public class ProgressFactory {
 		}
 		Adder<Value> adder = selectAdder(values.get(0));
 		return sum(values, adder);
+	}
+
+	private double computeCountingCurrentValue(
+			final Collection<? extends Progress<? extends Number>> subProgresses) {
+		BigDecimal value = BigDecimal.ZERO;
+		for (Progress<? extends Number> progress : subProgresses) {
+			Number actualMax = progress.getMaxValue();
+			if (actualMax == null) {
+				// add 0, so ignore
+			} else {
+				BigDecimal current = new BigDecimal(progress.getCurrentValue()
+						.toString());
+				BigDecimal max = new BigDecimal(actualMax.toString());
+				value = value
+						.add(current.divide(max, 20, RoundingMode.HALF_UP));
+			}
+		}
+		return value.doubleValue();
 	}
 
 	private <Value extends Number> Value computeAdditiveMaxValue(
@@ -396,5 +534,20 @@ public class ProgressFactory {
 
 	private static interface Adder<Value extends Number> {
 		public Value add(Value v1, Value v2);
+	}
+
+	class ProgressListenerMap {
+		private Map<Progress<? extends Number>, ProgressListener<? extends Number>> map = new HashMap<Progress<? extends Number>, Progress.ProgressListener<? extends Number>>();
+
+		public <Value extends Number> void put(Progress<Value> key,
+				ProgressListener<Value> value) {
+			map.put(key, value);
+		}
+
+		@SuppressWarnings("unchecked")
+		public <Value extends Number> ProgressListener<Value> get(
+				Progress<Value> key) {
+			return (ProgressListener<Value>) map.get(key);
+		}
 	}
 }

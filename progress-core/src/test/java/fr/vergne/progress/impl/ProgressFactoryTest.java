@@ -345,4 +345,155 @@ public class ProgressFactoryTest {
 		assertEquals(maxReference, progress.getMaxValue());
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGlobalCountingProgressProvidesCorrectCurrentValue() {
+		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
+		ManualProgress<Integer> p2 = factory.createManualProgress(0, 5);
+		ManualProgress<Integer> p3 = factory.createManualProgress(0, 3);
+		Progress<Double> progress = factory.createGlobalCountingProgress(Arrays
+				.asList(p1, p2, p3));
+
+		assertEquals((Double) 0.0, progress.getCurrentValue());
+		p1.setCurrentValue(3);
+		assertEquals((Double) 0.3, progress.getCurrentValue());
+		p2.setCurrentValue(1);
+		assertEquals((Double) 0.5, progress.getCurrentValue());
+		p3.setCurrentValue(3);
+		assertEquals((Double) 1.5, progress.getCurrentValue());
+
+		p1.setMaxValue(3);
+		assertEquals((Double) 2.2, progress.getCurrentValue());
+		p2.setMaxValue(2);
+		assertEquals((Double) 2.5, progress.getCurrentValue());
+		p3.setMaxValue(6);
+		assertEquals((Double) 2.0, progress.getCurrentValue());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGlobalCountingProgressProvidesCorrectMaxValue() {
+		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
+		ManualProgress<Integer> p2 = factory.createManualProgress(0, null);
+		ManualProgress<Integer> p3 = factory.createManualProgress(0, 3);
+		Progress<Double> progress = factory.createGlobalCountingProgress(Arrays
+				.asList(p1, p2, p3));
+
+		assertEquals((Double) 3.0, progress.getMaxValue());
+		p2.setMaxValue(5);
+		assertEquals((Double) 3.0, progress.getMaxValue());
+		p1.setMaxValue(null);
+		assertEquals((Double) 3.0, progress.getMaxValue());
+		p3.setCurrentValue(2);
+		assertEquals((Double) 3.0, progress.getMaxValue());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGlobalCountingProgressProvidesCorrectFinishedState() {
+		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
+		ManualProgress<Integer> p2 = factory.createManualProgress(0, 5);
+		ManualProgress<Integer> p3 = factory.createManualProgress(0, 3);
+		Progress<Double> progress = factory.createGlobalCountingProgress(Arrays
+				.asList(p1, p2, p3));
+
+		assertFalse(progress.isFinished());
+		p1.finish();
+		assertFalse(progress.isFinished());
+		p2.finish();
+		assertFalse(progress.isFinished());
+		p3.finish();
+		assertTrue(progress.isFinished());
+		p2.setCurrentValue(0);
+		assertFalse(progress.isFinished());
+		p2.finish();
+		assertTrue(progress.isFinished());
+		p1.setCurrentValue(0);
+		assertFalse(progress.isFinished());
+		p1.finish();
+		assertTrue(progress.isFinished());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGlobalCountingProgressProvidesCorrectNotifications() {
+		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
+		ManualProgress<Integer> p2 = factory.createManualProgress(0, 5);
+		ManualProgress<Integer> p3 = factory.createManualProgress(0, 3);
+		Progress<Double> progress = factory.createGlobalCountingProgress(Arrays
+				.asList(p1, p2, p3));
+
+		final List<Double> notifiedValues = new ArrayList<Double>(1);
+		notifiedValues.add(null);
+		progress.addProgressListener(new ProgressListener<Double>() {
+
+			@Override
+			public void currentUpdate(Double value) {
+				notifiedValues.set(0, value);
+			}
+
+			@Override
+			public void maxUpdate(Double maxValue) {
+				// no notification expected because constant
+			}
+
+		});
+
+		assertEquals(null, notifiedValues.get(0));
+
+		p1.setCurrentValue(5);
+		assertEquals(progress.getCurrentValue(), notifiedValues.get(0));
+		p2.setCurrentValue(1);
+		assertEquals(progress.getCurrentValue(), notifiedValues.get(0));
+		p3.setCurrentValue(2);
+		assertEquals(progress.getCurrentValue(), notifiedValues.get(0));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGlobalCountingProgressManagesHeterogenousTypes() {
+		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
+		ManualProgress<Double> p2 = factory.createManualProgress(0.0, 1.0);
+		ManualProgress<BigDecimal> p3 = factory.createManualProgress(
+				BigDecimal.ZERO, BigDecimal.TEN);
+		Progress<Double> progress = factory.createGlobalCountingProgress(Arrays
+				.asList(p1, p2, p3));
+
+		assertEquals((Double) 0.0, progress.getCurrentValue());
+		p1.setCurrentValue(3);
+		assertEquals((Double) 0.3, progress.getCurrentValue());
+		p2.setCurrentValue(0.2);
+		assertEquals((Double) 0.5, progress.getCurrentValue());
+		p3.setCurrentValue(new BigDecimal(3));
+		assertEquals((Double) 0.8, progress.getCurrentValue());
+	}
+
+	@Test
+	public void testGlobalCountingProgressRobustToSubProgressListModifications() {
+		List<ManualProgress<Integer>> subProgresses = new LinkedList<ManualProgress<Integer>>();
+		subProgresses.add(factory.createManualProgress(1, 10));
+		subProgresses.add(factory.createManualProgress(2, 5));
+		subProgresses.add(factory.createManualProgress(3, 3));
+
+		Progress<Double> progress = factory
+				.createGlobalCountingProgress(subProgresses);
+		Double currentReference = progress.getCurrentValue();
+		Double maxReference = progress.getMaxValue();
+
+		// Robust through computation
+		subProgresses.add(factory.createManualProgress(5, 10));
+		assertEquals(currentReference, progress.getCurrentValue());
+		assertEquals(maxReference, progress.getMaxValue());
+
+		// Robust through notifications
+		for (ManualProgress<Integer> subProgress : subProgresses) {
+			subProgress.setMaxValue(subProgress.getMaxValue() + 1);
+			subProgress.setCurrentValue(subProgress.getCurrentValue() + 1);
+
+			subProgress.setCurrentValue(subProgress.getCurrentValue() - 1);
+			subProgress.setMaxValue(subProgress.getMaxValue() - 1);
+		}
+		assertEquals(currentReference, progress.getCurrentValue());
+		assertEquals(maxReference, progress.getMaxValue());
+	}
 }
