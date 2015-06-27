@@ -78,7 +78,7 @@ ProgressUtil.displayProgress(progress, displayerForValueUpdate, displayerforMaxU
 ProgressUtil.displayProgress(progress, period, launchDisplayer, regularDisplayer, terminationDisplayer);
 ```
 
-Many variations are provided to adapt to different needs, but they generally call the two above.
+Many variations are provided to adapt to different needs, but they generally call the two above. Feel free to look at the [samples](https://github.com/matthieu-vergne/Progress/tree/master/progress-samples/src/main/java/fr/vergne/progress/sample) to see concrete uses of the different displays.
 
 ## And more...
 
