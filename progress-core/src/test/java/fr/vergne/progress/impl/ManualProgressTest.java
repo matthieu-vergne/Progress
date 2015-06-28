@@ -33,14 +33,13 @@ public class ManualProgressTest {
 
 	@Test
 	public void testManualProgressCorretlyFinished() {
-		int max = 10;
-		ManualProgress<Integer> progress = new ManualProgress<Integer>(5, 10);
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(0, 10);
 
-		for (int i = 0; i < max; i++) {
+		for (int i = 0; i < progress.getMaxValue(); i++) {
 			progress.setCurrentValue(i);
 			assertFalse(progress.isFinished());
 		}
-		progress.setCurrentValue(max);
+		progress.setCurrentValue(progress.getMaxValue());
 		assertTrue(progress.isFinished());
 	}
 
