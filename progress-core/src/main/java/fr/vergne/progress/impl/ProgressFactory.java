@@ -41,6 +41,17 @@ public class ProgressFactory {
 	}
 
 	/**
+	 * Creates a {@link Progress} instance which can be only in two states:
+	 * finished or not. See the Javadoc of {@link BinaryProgress} for further
+	 * details.
+	 * 
+	 * @return the {@link Progress} instance
+	 */
+	public BinaryProgress createBinaryProgress() {
+		return new BinaryProgress();
+	}
+
+	/**
 	 * Creates a {@link Progress} instance which should be manually updated via
 	 * a {@link ProgressSetter} provided in argument.
 	 * 
