@@ -1,4 +1,4 @@
-package fr.vergne.progress.sample;
+package fr.vergne.progress.sample.singleProgress;
 
 import java.util.Random;
 import java.util.logging.Handler;
@@ -10,7 +10,7 @@ import fr.vergne.progress.impl.ManualProgress;
 import fr.vergne.progress.impl.ProgressUtil;
 import fr.vergne.progress.impl.ProgressUtil.Displayer;
 
-public class LoggerSampleWithDisplaysBasedOnLogLevel {
+public class Sample4_CustomDisplay_LoggerAndLogLevels {
 
 	public static void main(String[] args) throws InterruptedException {
 		// Level of verbosity
@@ -23,7 +23,8 @@ public class LoggerSampleWithDisplaysBasedOnLogLevel {
 
 		// Create the logger on which to display
 		final Logger logger = Logger
-				.getLogger(LoggerSampleWithDisplaysBasedOnLogLevel.class.getName());
+				.getLogger(Sample4_CustomDisplay_LoggerAndLogLevels.class
+						.getName());
 
 		// Setup the level of verbosity
 		logger.setLevel(level);

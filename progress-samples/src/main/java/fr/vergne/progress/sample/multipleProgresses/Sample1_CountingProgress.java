@@ -1,4 +1,4 @@
-package fr.vergne.progress.sample;
+package fr.vergne.progress.sample.multipleProgresses;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,7 +10,7 @@ import fr.vergne.progress.impl.ManualProgress;
 import fr.vergne.progress.impl.ProgressFactory;
 import fr.vergne.progress.impl.ProgressUtil;
 
-public class CombinedSampleOnConsecutiveTasks {
+public class Sample1_CountingProgress {
 
 	public static void main(String[] args) throws InterruptedException {
 		// Use a factory to simplify the creation

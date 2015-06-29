@@ -1,11 +1,11 @@
-package fr.vergne.progress.sample;
+package fr.vergne.progress.sample.singleProgress;
 
 import java.util.Random;
 
 import fr.vergne.progress.impl.ManualProgress;
 import fr.vergne.progress.impl.ProgressUtil;
 
-public class CommandLineSampleWithRegularDisplay {
+public class Sample2_RegularDisplay {
 
 	public static void main(String[] args) throws InterruptedException {
 		// Create the progress which manages the advancement of our task
