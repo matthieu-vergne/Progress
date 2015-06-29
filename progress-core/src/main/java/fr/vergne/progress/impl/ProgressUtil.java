@@ -496,13 +496,14 @@ public class ProgressUtil {
 			return reduceDecimals(value, 3) + "/?";
 		} else {
 			int percent = computeIntegerPercentage(value, max);
-			return reduceDecimals(value, 3) + "/" + reduceDecimals(max, 3) + " (" + percent + "%)";
+			return reduceDecimals(value, 3) + "/" + reduceDecimals(max, 3)
+					+ " (" + percent + "%)";
 		}
 	}
-	
+
 	private static String reduceDecimals(Number value, int decimals) {
-		String string = ""+value;
-		string = string.replaceAll("(\\.\\d{"+decimals+"})\\d+", "$1");
+		String string = "" + value;
+		string = string.replaceAll("(\\.\\d{" + decimals + "})\\d+", "$1");
 		string = string.replaceAll("(\\.\\d*)0+$", "$1");
 		string = string.replaceAll("\\.$", "");
 		return string;
