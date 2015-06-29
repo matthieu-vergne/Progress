@@ -33,4 +33,9 @@ public class ProgressUtilTest {
 		assertEquals(100, ProgressUtil.computeIntegerPercentage(1000, 1000));
 	}
 
+	@Test
+	public void testToStringOnSpecificCasesPreviouslyWrong() {
+		assertEquals("1644/1800 (91%)", ProgressUtil.toString(new ManualProgress<Integer>(1644, 1800)));
+	}
+
 }

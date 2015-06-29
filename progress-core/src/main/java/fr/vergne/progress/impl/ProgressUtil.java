@@ -501,7 +501,8 @@ public class ProgressUtil {
 	private static String reduceDecimals(Number value, int decimals) {
 		String string = ""+value;
 		string = string.replaceAll("(\\.\\d{"+decimals+"})\\d+", "$1");
-		string = string.replaceAll("\\.?0+$", "");
+		string = string.replaceAll("(\\.\\d*)0+$", "$1");
+		string = string.replaceAll("\\.$", "");
 		return string;
 	}
 
