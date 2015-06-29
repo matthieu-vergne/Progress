@@ -22,7 +22,7 @@ public class Sample3_GraphicalDisplay {
 			Thread.sleep(rand.nextInt(1000));
 
 			// Update of the progress
-			progress.setCurrentValue(progress.getCurrentValue() + 1);
+			progress.add(1);
 		}
 		System.out.println("Finished.");
 	}

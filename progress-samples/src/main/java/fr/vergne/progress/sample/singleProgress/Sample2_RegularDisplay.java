@@ -22,7 +22,7 @@ public class Sample2_RegularDisplay {
 			Thread.sleep(rand.nextInt(10));
 
 			// Update of the progress
-			progress.setCurrentValue(progress.getCurrentValue() + 1);
+			progress.add(1);
 		}
 		System.out.println("Finished.");
 	}

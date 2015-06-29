@@ -22,7 +22,7 @@ public class Sample1_ManualUpdateAndDisplayOnStandardOutput {
 			Thread.sleep(rand.nextBoolean() ? 200 : 1000);
 
 			// Update of the progress
-			progress.setCurrentValue(progress.getCurrentValue() + 1);
+			progress.add(1);
 		}
 		System.out.println("Finished.");
 	}

@@ -51,8 +51,7 @@ public class Sample1_CountingProgress {
 			Thread.sleep(1000);
 
 			// Update of the progress of the task
-			currentProgress
-					.setCurrentValue(currentProgress.getCurrentValue() + 1);
+			currentProgress.add(1);
 
 			// If finished, do not execute it anymore
 			if (currentProgress.isFinished()) {

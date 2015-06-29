@@ -58,7 +58,7 @@ public class Sample4_CustomDisplay_LoggerAndLogLevels {
 			Thread.sleep(rand.nextInt(10));
 
 			// Update of the progress
-			progress.setCurrentValue(progress.getCurrentValue() + 1);
+			progress.add(1);
 		}
 		logger.info("Finished.");
 	}
