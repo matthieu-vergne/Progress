@@ -49,7 +49,7 @@ Collection<Progress<Integer>> subProgresses = ...;
 Progress<Integer> global = factory.createGlobalAdditiveProgress(subProgresses);
 ```
 
-The global `Progress` can be used like any other ones, so you can get its current value, max value and finished state, among other things. You can look at a [sample using a combined `Progress`](https://github.com/matthieu-vergne/Progress/blob/master/progress-samples/src/main/java/fr/vergne/progress/sample/multipleProgresses/Sample1_CountingProgress.java) for a more complete example. You can use different kinds of global `Progress` depending on your needs. For instance, the *additive* one simply sum up all the values (the max value of the global one is the sum of the max value of each sub-`Progress`), while the *counting* one abstract from the details (the global max value is the number of sub-`Progress` instances covered, and the advancement of each of them add a value in [0;1] to the global current value).
+The global `Progress` can be used like any other ones, so you can get its current value, max value and finished state, among other things. You can look at a [sample using a combined `Progress`](https://github.com/matthieu-vergne/Progress/blob/master/progress-samples/src/main/java/fr/vergne/progress/sample/multipleProgresses/Sample1_CountingProgress.java) for a more complete example. You can use different kinds of global `Progress` depending on your needs. For instance, the *additive* one simply sum up all the values, so you keep trace of each atomic step, while the *counting* one abstract from the details by simply computing a value in [0;1] for each sub-`Progress`, and going from 0 to the number of sub-`Progress` instances.
 
 ## Display a progress
 
@@ -61,11 +61,10 @@ ProgressUtil.displayProgressOnOutputStream(progress, System.out);
 ```
 or display it on a regular basis:
 ```
-// Display every second
-ProgressUtil.displayProgressOnOutputStream(progress, System.out, 1000);
+ProgressUtil.displayProgressOnOutputStream(progress, System.out, period);
 ```
 
-You can also display it in a `JDialog` for graphical display:
+You can also display it in a `JDialog` for graphical display (progress bar):
 ```
 ProgressUtil.displayProgressOnJDialog(progress);
 ```
