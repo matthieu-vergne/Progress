@@ -3,6 +3,8 @@ package fr.vergne.progress.impl;
 import java.awt.GridLayout;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import javax.swing.JDialog;
 import javax.swing.JProgressBar;
@@ -531,5 +533,126 @@ public class ProgressUtil {
 			Progress<Value> progress) {
 		return computeIntegerPercentage(progress.getCurrentValue(),
 				progress.getMaxValue());
+	}
+
+	/**
+	 * This method is a facility to build an addition function depending on the
+	 * type of value to manage. In particular, all {@link Number}s are not added
+	 * by simply using "v1 + v2" and some requires more specific uses, like
+	 * {@link BigInteger} which needs to use "v1.add(v2)". This method allows to
+	 * abstract from these details by providing the right {@link Adder} at
+	 * runtime.
+	 * 
+	 * @param value
+	 *            an example of {@link Value} to add
+	 * @return an {@link Adder} able to sum {@link Value}s of the same
+	 *         {@link Class}
+	 */
+	@SuppressWarnings("unchecked")
+	public static <Value extends Number> Adder<Value> createAdder(Value value) {
+		if (value == null) {
+			throw new NullPointerException(
+					"Cannot choose the right adder with a null value");
+		} else if (value instanceof Integer) {
+			return (Adder<Value>) new Adder<Integer>() {
+
+				@Override
+				public Integer add(Integer v1, Integer v2) {
+					checkNoNullOperand(v1, v2);
+					return v1 + v2;
+				}
+			};
+		} else if (value instanceof Long) {
+			return (Adder<Value>) new Adder<Long>() {
+
+				@Override
+				public Long add(Long v1, Long v2) {
+					checkNoNullOperand(v1, v2);
+					return v1 + v2;
+				}
+			};
+		} else if (value instanceof Short) {
+			return (Adder<Value>) new Adder<Short>() {
+
+				@Override
+				public Short add(Short v1, Short v2) {
+					checkNoNullOperand(v1, v2);
+					return (short) (v1 + v2);
+				}
+			};
+		} else if (value instanceof Float) {
+			return (Adder<Value>) new Adder<Float>() {
+
+				@Override
+				public Float add(Float v1, Float v2) {
+					checkNoNullOperand(v1, v2);
+					return v1 + v2;
+				}
+			};
+		} else if (value instanceof Double) {
+			return (Adder<Value>) new Adder<Double>() {
+
+				@Override
+				public Double add(Double v1, Double v2) {
+					checkNoNullOperand(v1, v2);
+					return v1 + v2;
+				}
+			};
+		} else if (value instanceof BigInteger) {
+			return (Adder<Value>) new Adder<BigInteger>() {
+
+				@Override
+				public BigInteger add(BigInteger v1, BigInteger v2) {
+					checkNoNullOperand(v1, v2);
+					return v1.add(v2);
+				}
+			};
+		} else if (value instanceof BigDecimal) {
+			return (Adder<Value>) new Adder<BigDecimal>() {
+
+				@Override
+				public BigDecimal add(BigDecimal v1, BigDecimal v2) {
+					checkNoNullOperand(v1, v2);
+					return v1.add(v2);
+				}
+			};
+		} else if (value instanceof Byte) {
+			return (Adder<Value>) new Adder<Byte>() {
+
+				@Override
+				public Byte add(Byte v1, Byte v2) {
+					checkNoNullOperand(v1, v2);
+					return (byte) (v1 + v2);
+				}
+			};
+		} else {
+			throw new RuntimeException("Unmanaged type: " + value.getClass());
+		}
+	}
+
+	/**
+	 * A {@link Progress} is often based on summing {@link Value}s, whether it
+	 * is to increment the current {@link Value} of a {@link Progress} or to sum
+	 * several sub- {@link Progress} instances into a global one. An
+	 * {@link Adder} is simply an addition function which comes at hand to do
+	 * such kind of operations, in particular for
+	 * {@link ProgressUtil#createAdder(Number)}.
+	 * 
+	 * @author Matthieu Vergne <matthieu.vergne@gmail.com>
+	 * 
+	 * @param <Value>
+	 */
+	public static interface Adder<Value extends Number> {
+		public Value add(Value v1, Value v2);
+	}
+
+	private static <Value extends Number> void checkNoNullOperand(Value v1,
+			Value v2) {
+		if (v1 == null || v2 == null) {
+			throw new NullPointerException("We cannot add null values: " + v1
+					+ " + " + v2);
+		} else {
+			// OK
+		}
 	}
 }

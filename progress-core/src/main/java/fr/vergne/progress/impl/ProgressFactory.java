@@ -1,7 +1,6 @@
 package fr.vergne.progress.impl;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +13,7 @@ import java.util.Map;
 
 import fr.vergne.progress.Progress;
 import fr.vergne.progress.Progress.ProgressListener;
+import fr.vergne.progress.impl.ProgressUtil.Adder;
 
 /**
  * This {@link ProgressFactory} provides facilities to create different kinds of
@@ -405,7 +405,7 @@ public class ProgressFactory {
 		for (Progress<Value> progress : subProgresses) {
 			values.add(progress.getCurrentValue());
 		}
-		Adder<Value> adder = selectAdder(values.get(0));
+		Adder<Value> adder = ProgressUtil.createAdder(values.get(0));
 		return sum(values, adder);
 	}
 
@@ -437,7 +437,7 @@ public class ProgressFactory {
 		if (values.contains(null)) {
 			return null;
 		} else {
-			Adder<Value> adder = selectAdder(values.get(0));
+			Adder<Value> adder = ProgressUtil.createAdder(values.get(0));
 			return sum(values, adder);
 		}
 	}
@@ -450,101 +450,6 @@ public class ProgressFactory {
 			value = adder.add(value, iterator.next());
 		}
 		return value;
-	}
-
-	@SuppressWarnings("unchecked")
-	private <Value extends Number> Adder<Value> selectAdder(Value value) {
-		if (value == null) {
-			throw new NullPointerException(
-					"Cannot choose the right adder with a null value");
-		} else if (value instanceof Integer) {
-			return (Adder<Value>) new Adder<Integer>() {
-
-				@Override
-				public Integer add(Integer v1, Integer v2) {
-					checkNoNullOperand(v1, v2);
-					return v1 + v2;
-				}
-			};
-		} else if (value instanceof Long) {
-			return (Adder<Value>) new Adder<Long>() {
-
-				@Override
-				public Long add(Long v1, Long v2) {
-					checkNoNullOperand(v1, v2);
-					return v1 + v2;
-				}
-			};
-		} else if (value instanceof Short) {
-			return (Adder<Value>) new Adder<Short>() {
-
-				@Override
-				public Short add(Short v1, Short v2) {
-					checkNoNullOperand(v1, v2);
-					return (short) (v1 + v2);
-				}
-			};
-		} else if (value instanceof Float) {
-			return (Adder<Value>) new Adder<Float>() {
-
-				@Override
-				public Float add(Float v1, Float v2) {
-					checkNoNullOperand(v1, v2);
-					return v1 + v2;
-				}
-			};
-		} else if (value instanceof Double) {
-			return (Adder<Value>) new Adder<Double>() {
-
-				@Override
-				public Double add(Double v1, Double v2) {
-					checkNoNullOperand(v1, v2);
-					return v1 + v2;
-				}
-			};
-		} else if (value instanceof BigInteger) {
-			return (Adder<Value>) new Adder<BigInteger>() {
-
-				@Override
-				public BigInteger add(BigInteger v1, BigInteger v2) {
-					checkNoNullOperand(v1, v2);
-					return v1.add(v2);
-				}
-			};
-		} else if (value instanceof BigDecimal) {
-			return (Adder<Value>) new Adder<BigDecimal>() {
-
-				@Override
-				public BigDecimal add(BigDecimal v1, BigDecimal v2) {
-					checkNoNullOperand(v1, v2);
-					return v1.add(v2);
-				}
-			};
-		} else if (value instanceof Byte) {
-			return (Adder<Value>) new Adder<Byte>() {
-
-				@Override
-				public Byte add(Byte v1, Byte v2) {
-					checkNoNullOperand(v1, v2);
-					return (byte) (v1 + v2);
-				}
-			};
-		} else {
-			throw new RuntimeException("Unmanaged type: " + value.getClass());
-		}
-	}
-
-	private <Value extends Number> void checkNoNullOperand(Value v1, Value v2) {
-		if (v1 == null || v2 == null) {
-			throw new NullPointerException("We cannot add null values: " + v1
-					+ " + " + v2);
-		} else {
-			// OK
-		}
-	}
-
-	private static interface Adder<Value extends Number> {
-		public Value add(Value v1, Value v2);
 	}
 
 	class ProgressListenerMap {
