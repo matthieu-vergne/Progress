@@ -522,4 +522,14 @@ public class ProgressUtil {
 			Value value, Value max) {
 		return (int) Math.floor(100 * value.doubleValue() / max.doubleValue());
 	}
+
+	/**
+	 * Shortcut to {@link #computeIntegerPercentage(Number, Number)} applied on
+	 * a given {@link Progress}.
+	 */
+	public static <Value extends Number> int computeIntegerPercentage(
+			Progress<Value> progress) {
+		return computeIntegerPercentage(progress.getCurrentValue(),
+				progress.getMaxValue());
+	}
 }
