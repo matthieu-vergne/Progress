@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import fr.vergne.progress.Progress;
+import fr.vergne.progress.impl.ProgressUtil.Adder;
 
 /**
  * A {@link ManualProgress} aims at providing a simple {@link Progress} that one
@@ -18,6 +19,7 @@ public class ManualProgress<Value extends Number> implements Progress<Value> {
 	private Value currentValue;
 	private Value maxValue;
 	private final Collection<ProgressListener<Value>> listeners = new HashSet<ProgressListener<Value>>();
+	private final Adder<Value> adder;
 
 	/**
 	 * 
@@ -30,6 +32,7 @@ public class ManualProgress<Value extends Number> implements Progress<Value> {
 	public ManualProgress(Value startValue, Value maxValue) {
 		setCurrentValue(startValue);
 		setMaxValue(maxValue);
+		adder = ProgressUtil.createAdder(startValue);
 	}
 
 	public void setCurrentValue(Value value) {
@@ -55,6 +58,17 @@ public class ManualProgress<Value extends Number> implements Progress<Value> {
 	@Override
 	public Value getCurrentValue() {
 		return currentValue;
+	}
+
+	/**
+	 * Because a {@link Progress} is often about incrementing {@link Value}s,
+	 * this method provides a shortcut to do such operation.
+	 * 
+	 * @param addedValue
+	 *            the {@link Value} to add to the current value
+	 */
+	public void add(Value addedValue) {
+		setCurrentValue(adder.add(getCurrentValue(), addedValue));
 	}
 
 	public void setMaxValue(Value value) {

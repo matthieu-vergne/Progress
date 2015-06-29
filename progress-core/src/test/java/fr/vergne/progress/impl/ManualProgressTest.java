@@ -177,4 +177,18 @@ public class ManualProgressTest {
 			assertTrue(progress.isFinished());
 		}
 	}
+	
+	@Test
+	public void testManualProgressCorretlyAdd() {
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(0, 10);
+
+		assertEquals((Integer) 0, progress.getCurrentValue());
+		progress.add(1);
+		assertEquals((Integer) 1, progress.getCurrentValue());
+		progress.add(2);
+		assertEquals((Integer) 3, progress.getCurrentValue());
+		progress.add(5);
+		assertEquals((Integer) 8, progress.getCurrentValue());
+	}
+
 }
