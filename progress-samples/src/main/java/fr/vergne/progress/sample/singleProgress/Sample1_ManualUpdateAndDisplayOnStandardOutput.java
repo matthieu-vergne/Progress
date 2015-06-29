@@ -9,7 +9,7 @@ public class Sample1_ManualUpdateAndDisplayOnStandardOutput {
 
 	public static void main(String[] args) throws InterruptedException {
 		// Create the progress which manages the advancement of our task
-		ManualProgress<Integer> progress = new ManualProgress<Integer>(0, 10);
+		ManualProgress<Integer> progress = new ManualProgress<Integer>(0, 5);
 
 		// Display the progress evolution on the standard output
 		ProgressUtil.displayProgressOnOutputStream(progress, System.out);
