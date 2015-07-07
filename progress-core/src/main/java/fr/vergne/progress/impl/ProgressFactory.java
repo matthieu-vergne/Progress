@@ -13,7 +13,7 @@ import java.util.Map;
 
 import fr.vergne.progress.Progress;
 import fr.vergne.progress.Progress.ProgressListener;
-import fr.vergne.progress.impl.ProgressUtil.Adder;
+import fr.vergne.progress.impl.ProgressUtil.ValueTranslator;
 
 /**
  * This {@link ProgressFactory} provides facilities to create different kinds of
@@ -405,8 +405,9 @@ public class ProgressFactory {
 		for (Progress<Value> progress : subProgresses) {
 			values.add(progress.getCurrentValue());
 		}
-		Adder<Value> adder = ProgressUtil.createAdder(values.get(0));
-		return sum(values, adder);
+		ValueTranslator<Value> translator = ProgressUtil
+				.createValueTranslator(values.get(0));
+		return sum(values, translator);
 	}
 
 	private double computeCountingCurrentValue(
@@ -437,19 +438,20 @@ public class ProgressFactory {
 		if (values.contains(null)) {
 			return null;
 		} else {
-			Adder<Value> adder = ProgressUtil.createAdder(values.get(0));
-			return sum(values, adder);
+			ValueTranslator<Value> translator = ProgressUtil
+					.createValueTranslator(values.get(0));
+			return sum(values, translator);
 		}
 	}
 
 	private <Value extends Number> Value sum(List<Value> values,
-			Adder<Value> adder) {
+			ValueTranslator<Value> translator) {
 		Iterator<Value> iterator = values.iterator();
-		Value value = iterator.next();
+		BigDecimal value = translator.toDecimal(iterator.next());
 		while (iterator.hasNext()) {
-			value = adder.add(value, iterator.next());
+			value = value.add(translator.toDecimal(iterator.next()));
 		}
-		return value;
+		return translator.toValue(value);
 	}
 
 	class ProgressListenerMap {

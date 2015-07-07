@@ -5,10 +5,12 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 
 import javax.swing.JDialog;
 import javax.swing.JProgressBar;
 
+import fr.vergne.progress.Predictor;
 import fr.vergne.progress.Progress;
 import fr.vergne.progress.Progress.ProgressListener;
 
@@ -537,93 +539,118 @@ public class ProgressUtil {
 	}
 
 	/**
-	 * This method is a facility to build an addition function depending on the
-	 * type of value to manage. In particular, all {@link Number}s are not added
-	 * by simply using "v1 + v2" and some requires more specific uses, like
-	 * {@link BigInteger} which needs to use "v1.add(v2)". This method allows to
-	 * abstract from these details by providing the right {@link Adder} at
-	 * runtime.
+	 * This method is a facility to build a {@link ValueTranslator} depending on
+	 * the type of {@link Value} to manage. In particular, all {@link Number}s
+	 * are not added by simply using "v1 + v2" and some requires more specific
+	 * uses, like {@link BigInteger} which needs to use "v1.add(v2)". This
+	 * method allows to abstract from these details by providing the right
+	 * {@link ValueTranslator} at runtime.
 	 * 
 	 * @param value
-	 *            an example of {@link Value} to add
-	 * @return an {@link Adder} able to sum {@link Value}s of the same
-	 *         {@link Class}
+	 *            an example of {@link Value} to compute
+	 * @return a {@link ValueTranslator} able to do various operations on
+	 *         {@link Value}s of the same {@link Class}
 	 */
 	@SuppressWarnings("unchecked")
-	public static <Value extends Number> Adder<Value> createAdder(Value value) {
+	public static <Value extends Number> ValueTranslator<Value> createValueTranslator(
+			Value value) {
 		if (value == null) {
 			throw new NullPointerException(
-					"Cannot choose the right adder with a null value");
+					"Cannot choose the right value computer with a null value");
 		} else if (value instanceof Integer) {
-			return (Adder<Value>) new Adder<Integer>() {
+			return (ValueTranslator<Value>) new ValueTranslator<Integer>() {
+				@Override
+				public BigDecimal toDecimal(Integer value) {
+					return new BigDecimal(value.toString());
+				}
 
 				@Override
-				public Integer add(Integer v1, Integer v2) {
-					checkNoNullOperand(v1, v2);
-					return v1 + v2;
+				public Integer toValue(BigDecimal decimal) {
+					return decimal.intValue();
 				}
 			};
 		} else if (value instanceof Long) {
-			return (Adder<Value>) new Adder<Long>() {
+			return (ValueTranslator<Value>) new ValueTranslator<Long>() {
+				@Override
+				public BigDecimal toDecimal(Long value) {
+					return new BigDecimal(value.toString());
+				}
 
 				@Override
-				public Long add(Long v1, Long v2) {
-					checkNoNullOperand(v1, v2);
-					return v1 + v2;
+				public Long toValue(BigDecimal decimal) {
+					return decimal.longValue();
 				}
 			};
 		} else if (value instanceof Short) {
-			return (Adder<Value>) new Adder<Short>() {
-
+			return (ValueTranslator<Value>) new ValueTranslator<Short>() {
 				@Override
-				public Short add(Short v1, Short v2) {
-					checkNoNullOperand(v1, v2);
-					return (short) (v1 + v2);
+				public BigDecimal toDecimal(Short value) {
+					return new BigDecimal(value.toString());
 				}
-			};
-		} else if (value instanceof Float) {
-			return (Adder<Value>) new Adder<Float>() {
 
 				@Override
-				public Float add(Float v1, Float v2) {
-					checkNoNullOperand(v1, v2);
-					return v1 + v2;
-				}
-			};
-		} else if (value instanceof Double) {
-			return (Adder<Value>) new Adder<Double>() {
-
-				@Override
-				public Double add(Double v1, Double v2) {
-					checkNoNullOperand(v1, v2);
-					return v1 + v2;
-				}
-			};
-		} else if (value instanceof BigInteger) {
-			return (Adder<Value>) new Adder<BigInteger>() {
-
-				@Override
-				public BigInteger add(BigInteger v1, BigInteger v2) {
-					checkNoNullOperand(v1, v2);
-					return v1.add(v2);
-				}
-			};
-		} else if (value instanceof BigDecimal) {
-			return (Adder<Value>) new Adder<BigDecimal>() {
-
-				@Override
-				public BigDecimal add(BigDecimal v1, BigDecimal v2) {
-					checkNoNullOperand(v1, v2);
-					return v1.add(v2);
+				public Short toValue(BigDecimal decimal) {
+					return decimal.shortValue();
 				}
 			};
 		} else if (value instanceof Byte) {
-			return (Adder<Value>) new Adder<Byte>() {
+			return (ValueTranslator<Value>) new ValueTranslator<Byte>() {
+				@Override
+				public BigDecimal toDecimal(Byte value) {
+					return new BigDecimal(value.toString());
+				}
 
 				@Override
-				public Byte add(Byte v1, Byte v2) {
-					checkNoNullOperand(v1, v2);
-					return (byte) (v1 + v2);
+				public Byte toValue(BigDecimal decimal) {
+					return decimal.byteValue();
+				}
+			};
+		} else if (value instanceof Float) {
+			return (ValueTranslator<Value>) new ValueTranslator<Float>() {
+				@Override
+				public BigDecimal toDecimal(Float value) {
+					return new BigDecimal(value.toString());
+				}
+
+				@Override
+				public Float toValue(BigDecimal decimal) {
+					return decimal.floatValue();
+				}
+			};
+		} else if (value instanceof Double) {
+			return (ValueTranslator<Value>) new ValueTranslator<Double>() {
+				@Override
+				public BigDecimal toDecimal(Double value) {
+					return new BigDecimal(value.toString());
+				}
+
+				@Override
+				public Double toValue(BigDecimal decimal) {
+					return decimal.doubleValue();
+				}
+			};
+		} else if (value instanceof BigInteger) {
+			return (ValueTranslator<Value>) new ValueTranslator<BigInteger>() {
+				@Override
+				public BigDecimal toDecimal(BigInteger value) {
+					return new BigDecimal(value);
+				}
+
+				@Override
+				public BigInteger toValue(BigDecimal decimal) {
+					return decimal.toBigInteger();
+				}
+			};
+		} else if (value instanceof BigDecimal) {
+			return (ValueTranslator<Value>) new ValueTranslator<BigDecimal>() {
+				@Override
+				public BigDecimal toDecimal(BigDecimal value) {
+					return value;
+				}
+
+				@Override
+				public BigDecimal toValue(BigDecimal decimal) {
+					return decimal;
 				}
 			};
 		} else {
@@ -632,28 +659,94 @@ public class ProgressUtil {
 	}
 
 	/**
-	 * A {@link Progress} is often based on summing {@link Value}s, whether it
-	 * is to increment the current {@link Value} of a {@link Progress} or to sum
-	 * several sub- {@link Progress} instances into a global one. An
-	 * {@link Adder} is simply an addition function which comes at hand to do
-	 * such kind of operations, in particular for
-	 * {@link ProgressUtil#createAdder(Number)}.
+	 * A {@link Progress} is often based on computing {@link Value}s, whether we
+	 * simply add them to make a {@link Progress} advance, or for a
+	 * {@link Predictor} to be able to compute new {@link Value}s. A
+	 * {@link ValueTranslator} allows to switch between a {@link Value} and a
+	 * {@link BigDecimal}, which is the most extended {@link Number}
+	 * implementation (able to deal with any arbitrary precision), thus the most
+	 * suited for computation.
 	 * 
 	 * @author Matthieu Vergne <matthieu.vergne@gmail.com>
 	 * 
 	 * @param <Value>
 	 */
-	public static interface Adder<Value extends Number> {
-		public Value add(Value v1, Value v2);
+	public static interface ValueTranslator<Value extends Number> {
+		public Value toValue(BigDecimal decimal);
+
+		public BigDecimal toDecimal(Value value);
 	}
 
-	private static <Value extends Number> void checkNoNullOperand(Value v1,
-			Value v2) {
-		if (v1 == null || v2 == null) {
-			throw new NullPointerException("We cannot add null values: " + v1
-					+ " + " + v2);
-		} else {
-			// OK
+	/**
+	 * This method provides a simple way to estimate the termination time of a
+	 * {@link Progress}. Basically, a {@link Progress} only provides current and
+	 * max values, but based on their evolution we can predict when they will
+	 * become equal by using {@link Predictor}s. If you use the right
+	 * {@link Predictor} for the current value (<i>current(t)</i>) and the right
+	 * one for the max value (<i>max(t)</i>), then you can obtain a fairly
+	 * reliable prediction of the termination time.<br/>
+	 * <br/>
+	 * This method uses the <a
+	 * href="https://en.wikipedia.org/wiki/Secant_method">secant method</a> to
+	 * find a zero for a function. In particular, we try here to find a zero for
+	 * <i>f(t) = max(t) - current(t)</i>, so we try to find <i>t</i> such that
+	 * <i>max(t) = current(t)</i>.
+	 * 
+	 * @param currentPredictor
+	 *            the {@link Predictor} for the current value of the
+	 *            {@link Progress}
+	 * @param maxPredictor
+	 *            the {@link Predictor} for the max value of the
+	 *            {@link Progress}
+	 * @return the timestamp at which we expect the progress to finish
+	 */
+	public static <Value extends Number> long predictTerminationTime(
+			Predictor<Value> currentPredictor, Predictor<Value> maxPredictor) {
+		Value referenceValue = currentPredictor.predictValueAt(System
+				.currentTimeMillis());
+		ValueTranslator<Value> translator = createValueTranslator(referenceValue);
+
+		long t1 = System.currentTimeMillis();
+		BigDecimal diff1 = computeDiff(currentPredictor, maxPredictor,
+				translator, t1);
+
+		long t2 = t1 + 1;
+		BigDecimal diff2 = computeDiff(currentPredictor, maxPredictor,
+				translator, t2);
+
+		while (diff1.compareTo(BigDecimal.ZERO) > 0) {
+			BigDecimal dDiff = diff2.subtract(diff1).divide(
+					new BigDecimal(t2 - t1), 20, RoundingMode.HALF_UP);
+
+			if (dDiff.compareTo(BigDecimal.ZERO) == 0) {
+				t2 += t2 != t1 ? t2 - t1 : 1;
+				diff2 = computeDiff(currentPredictor, maxPredictor, translator,
+						t2);
+			} else {
+				long nextT = t1
+						- diff1.divide(dDiff, 20, RoundingMode.HALF_UP)
+								.longValue();
+
+				t1 = t2;
+				diff1 = diff2;
+
+				t2 = nextT;
+				diff2 = computeDiff(currentPredictor, maxPredictor, translator,
+						t2);
+			}
 		}
+
+		return t1;
+	}
+
+	private static <Value extends Number> BigDecimal computeDiff(
+			Predictor<Value> currentPredictor, Predictor<Value> maxPredictor,
+			ValueTranslator<Value> translator, long time) {
+		BigDecimal current = translator.toDecimal(currentPredictor
+				.predictValueAt(time));
+		BigDecimal max = translator
+				.toDecimal(maxPredictor.predictValueAt(time));
+		BigDecimal diff = max.subtract(current);
+		return diff;
 	}
 }
