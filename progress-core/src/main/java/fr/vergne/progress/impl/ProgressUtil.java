@@ -13,6 +13,7 @@ import javax.swing.JProgressBar;
 import fr.vergne.progress.Predictor;
 import fr.vergne.progress.Progress;
 import fr.vergne.progress.Progress.ProgressListener;
+import fr.vergne.progress.impl.PredictorFactory.UnableToPredictException;
 
 /**
  * This utility class provides different services to simplify the management of
@@ -720,8 +721,6 @@ public class ProgressUtil {
 
 			if (dDiff.compareTo(BigDecimal.ZERO) == 0) {
 				t2 += t2 != t1 ? t2 - t1 : 1;
-				diff2 = computeDiff(currentPredictor, maxPredictor, translator,
-						t2);
 			} else {
 				long nextT = t1
 						- diff1.divide(dDiff, 20, RoundingMode.HALF_UP)
@@ -731,6 +730,12 @@ public class ProgressUtil {
 				diff1 = diff2;
 
 				t2 = nextT;
+			}
+
+			if (t2 == t1) {
+				throw new UnableToPredictException(
+						"Extreme case reach, avoid further computation");
+			} else {
 				diff2 = computeDiff(currentPredictor, maxPredictor, translator,
 						t2);
 			}
