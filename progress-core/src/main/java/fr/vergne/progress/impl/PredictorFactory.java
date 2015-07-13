@@ -2,7 +2,10 @@ package fr.vergne.progress.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Iterator;
 import java.util.LinkedList;
+
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import fr.vergne.progress.Predictor;
 import fr.vergne.progress.Progress;
@@ -65,7 +68,8 @@ public class PredictorFactory {
 	 * assuming that they follow a linear evolution <i>f(x)=ax+b</i>. It stores
 	 * the last values generated and produce its estimation based on them. To be
 	 * smooth, it stores at least 100 values (for long runs) and at least 10s
-	 * worth of values (for frequent updates).
+	 * worth of values (for frequent updates). We use a least square regression
+	 * method to build the linear model.
 	 * 
 	 * @param progress
 	 *            the {@link Progress} to listen
@@ -73,8 +77,6 @@ public class PredictorFactory {
 	 *            the {@link PredictedValue}
 	 * @return the {@link Predictor} which will predict the values
 	 */
-	// TODO prefer to use a linear least square method:
-	// https://en.wikipedia.org/wiki/Linear_least_squares_%28mathematics%29#Example
 	public <Value extends Number> Predictor<Value> createLinearPredictor(
 			Progress<Value> progress, PredictedValue target) {
 		final LinearData<Value> data = new LinearData<Value>();
@@ -107,21 +109,19 @@ public class PredictorFactory {
 				} else if (data.times.size() == 1) {
 					return data.values.getFirst();
 				} else {
-					Long start = data.times.getFirst();
-					Long stop = data.times.getLast();
-					BigDecimal valueStart = data.translator
-							.toDecimal(data.values.getFirst());
-					BigDecimal valueStop = data.translator
-							.toDecimal(data.values.getLast());
+					Iterator<Long> timeIterator = data.times.iterator();
+					Iterator<Value> valueIterator = data.values.iterator();
+					SimpleRegression regression = new SimpleRegression(true);
+					while (timeIterator.hasNext()) {
+						Long time = timeIterator.next();
+						Value value = valueIterator.next();
+						regression.addData(time.doubleValue(),
+								value.doubleValue());
+					}
 
-					BigDecimal dvFrom = valueStop.subtract(valueStart);
-					BigDecimal dtFrom = new BigDecimal(stop - start);
-					BigDecimal dtTo = new BigDecimal(timestamp - start);
-					BigDecimal dvTo = dvFrom.multiply(dtTo).divide(dtFrom, 20,
-							RoundingMode.HALF_UP);
-					BigDecimal result = valueStart.add(dvTo);
-
-					return data.translator.toValue(result);
+					double prediction = regression.predict(timestamp);
+					return data.translator.toValue(new BigDecimal(""
+							+ prediction));
 				}
 			}
 		};
