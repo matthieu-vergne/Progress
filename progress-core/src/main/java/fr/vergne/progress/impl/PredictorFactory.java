@@ -1,7 +1,6 @@
 package fr.vergne.progress.impl;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.LinkedList;
 
