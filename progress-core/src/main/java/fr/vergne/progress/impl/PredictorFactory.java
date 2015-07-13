@@ -102,7 +102,7 @@ public class PredictorFactory {
 			@Override
 			public Value predictValueAt(long timestamp) {
 				if (data.times.isEmpty()) {
-					throw new RuntimeException(
+					throw new UnableToPredictException(
 							"Impossible to predict anything without any generated value.");
 				} else if (data.times.size() == 1) {
 					return data.values.getFirst();
@@ -125,6 +125,17 @@ public class PredictorFactory {
 				}
 			}
 		};
+	}
+
+	@SuppressWarnings("serial")
+	public static class UnableToPredictException extends RuntimeException {
+		public UnableToPredictException(String message, Throwable cause) {
+			super(message, cause);
+		}
+
+		public UnableToPredictException(String message) {
+			super(message);
+		}
 	}
 
 	private static class LinearData<Value extends Number> {
