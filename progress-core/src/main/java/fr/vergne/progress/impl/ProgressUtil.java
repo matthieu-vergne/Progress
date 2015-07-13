@@ -712,32 +712,30 @@ public class ProgressUtil {
 				translator, t1);
 
 		long t2 = t1 + 1;
-		BigDecimal diff2 = computeDiff(currentPredictor, maxPredictor,
-				translator, t2);
 
 		while (diff1.compareTo(BigDecimal.ZERO) > 0) {
-			BigDecimal dDiff = diff2.subtract(diff1).divide(
-					new BigDecimal(t2 - t1), 20, RoundingMode.HALF_UP);
-
-			if (dDiff.compareTo(BigDecimal.ZERO) == 0) {
-				t2 += t2 != t1 ? t2 - t1 : 1;
-			} else {
-				long nextT = t1
-						- diff1.divide(dDiff, 20, RoundingMode.HALF_UP)
-								.longValue();
-
-				t1 = t2;
-				diff1 = diff2;
-
-				t2 = nextT;
-			}
-
 			if (t2 == t1) {
 				throw new UnableToPredictException(
 						"Extreme case reach, avoid further computation");
 			} else {
-				diff2 = computeDiff(currentPredictor, maxPredictor, translator,
-						t2);
+				BigDecimal diff2 = computeDiff(currentPredictor, maxPredictor,
+						translator, t2);
+
+				BigDecimal dDiff = diff2.subtract(diff1).divide(
+						new BigDecimal(t2 - t1), 20, RoundingMode.HALF_UP);
+
+				if (dDiff.compareTo(BigDecimal.ZERO) == 0) {
+					t2 += t2 != t1 ? t2 - t1 : 1;
+				} else {
+					long nextT = t1
+							- diff1.divide(dDiff, 20, RoundingMode.HALF_UP)
+									.longValue();
+
+					t1 = t2;
+					diff1 = diff2;
+
+					t2 = nextT;
+				}
 			}
 		}
 
