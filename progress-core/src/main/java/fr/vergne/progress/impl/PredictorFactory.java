@@ -1,7 +1,6 @@
 package fr.vergne.progress.impl;
 
 import java.math.BigDecimal;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
@@ -79,16 +78,20 @@ public class PredictorFactory {
 	public <Value extends Number> Predictor<Value> createLinearPredictor(
 			Progress<Value> progress, PredictedValue target) {
 		final LinearData<Value> data = new LinearData<Value>();
+		final SimpleRegression regression = new SimpleRegression(true);
 		listenProgress(progress, target, new ValueListener<Value>() {
 
 			@Override
 			public void valueReceived(Value value) {
-				data.times.addLast(System.currentTimeMillis());
+				long time = System.currentTimeMillis();
+				data.times.addLast(time);
 				data.values.addLast(value);
+				regression.addData(time, value.doubleValue());
 				while (data.times.size() > 100
 						&& data.times.getLast() - data.times.getFirst() > 10000) {
-					data.values.removeFirst();
-					data.times.removeFirst();
+					Long oldTime = data.times.removeFirst();
+					Value oldValue = data.values.removeFirst();
+					regression.removeData(oldTime, oldValue.doubleValue());
 				}
 
 				if (data.translator == null) {
@@ -108,16 +111,6 @@ public class PredictorFactory {
 				} else if (data.times.size() == 1) {
 					return data.values.getFirst();
 				} else {
-					Iterator<Long> timeIterator = data.times.iterator();
-					Iterator<Value> valueIterator = data.values.iterator();
-					SimpleRegression regression = new SimpleRegression(true);
-					while (timeIterator.hasNext()) {
-						Long time = timeIterator.next();
-						Value value = valueIterator.next();
-						regression.addData(time.doubleValue(),
-								value.doubleValue());
-					}
-
 					double prediction = regression.predict(timestamp);
 					return data.translator.toValue(new BigDecimal(""
 							+ prediction));
