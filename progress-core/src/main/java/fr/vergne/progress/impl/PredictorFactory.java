@@ -153,6 +153,7 @@ public class PredictorFactory {
 					// nothing to do
 				}
 			});
+			listener.valueReceived(progress.getCurrentValue());
 		} else if (target == PredictedValue.MAX_VALUE) {
 			progress.addProgressListener(new ProgressListener<Value>() {
 
@@ -166,6 +167,7 @@ public class PredictorFactory {
 					listener.valueReceived(maxValue);
 				}
 			});
+			listener.valueReceived(progress.getMaxValue());
 		} else {
 			throw new RuntimeException("Unmanaged target: " + target);
 		}
