@@ -191,7 +191,7 @@ public class PredictorFactoryTest {
 				 */
 			} else {
 				// consider a strict error margin to be almost equal
-				double acceptableError = 0.01;
+				double acceptableError = 0.02;
 				long timestamp = start + maxDelta;
 				long expected = predictor.predictValueAt(timestamp);
 				long min = (long) (expected - (expected - artificialDeviation)
