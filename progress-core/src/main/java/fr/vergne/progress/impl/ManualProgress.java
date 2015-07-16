@@ -49,9 +49,11 @@ public class ManualProgress<Value extends Number> implements Progress<Value> {
 					"The current value cannot be higher than the max value ("
 							+ maxValue + "): " + value);
 		} else {
-			this.currentValue = value;
-			for (ProgressListener<Value> listener : listeners) {
-				listener.currentUpdate(value);
+			synchronized (this) {
+				this.currentValue = value;
+				for (ProgressListener<Value> listener : listeners) {
+					listener.currentUpdate(value);
+				}
 			}
 		}
 	}
@@ -86,9 +88,11 @@ public class ManualProgress<Value extends Number> implements Progress<Value> {
 					"The max value cannot be lower than the current value ("
 							+ currentValue + "): " + value);
 		} else {
-			this.maxValue = value;
-			for (ProgressListener<Value> listener : listeners) {
-				listener.maxUpdate(value);
+			synchronized (this) {
+				this.maxValue = value;
+				for (ProgressListener<Value> listener : listeners) {
+					listener.maxUpdate(value);
+				}
 			}
 		}
 	}
@@ -113,17 +117,23 @@ public class ManualProgress<Value extends Number> implements Progress<Value> {
 
 	@Override
 	public void addProgressListener(ProgressListener<Value> listener) {
-		listeners.add(listener);
+		synchronized (this) {
+			listeners.add(listener);
+		}
 	}
 
 	@Override
 	public void removeProgressListener(ProgressListener<Value> listener) {
-		listeners.remove(listener);
+		synchronized (this) {
+			listeners.remove(listener);
+		}
 	}
 
 	@Override
 	protected void finalize() throws Throwable {
-		listeners.clear();
+		synchronized (this) {
+			listeners.clear();
+		}
 	}
 
 	@Override
