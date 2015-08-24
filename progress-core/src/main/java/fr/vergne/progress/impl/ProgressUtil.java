@@ -783,4 +783,38 @@ public class ProgressUtil {
 		BigDecimal diff = max.subtract(current);
 		return diff;
 	}
+
+	/**
+	 * Create a {@link Displayer} on a given {@link OutputStream}. The
+	 * {@link Formatter} is used to create the {@link String} representation of
+	 * the {@link Progress} instances sent to this {@link OutputStream}.
+	 * 
+	 * @param stream
+	 *            the {@link OutputStream} on which to display {@link Progress}
+	 *            instances
+	 * @param formatter
+	 *            the {@link Formatter} used to format the {@link Progress}
+	 *            instances
+	 * @return a {@link Displayer} on the given {@link OutputStream}
+	 */
+	public Displayer createOutputStreamDisplayer(OutputStream stream,
+			final Formatter formatter) {
+		final PrintStream printer = new PrintStream(stream);
+		return new Displayer() {
+
+			@Override
+			public <V extends Number> void display(Progress<V> progress) {
+				printer.println(formatter.format(progress));
+			}
+		};
+	}
+
+	/**
+	 * Same than {@link #createOutputStreamDisplayer(OutputStream, Formatter)}
+	 * but uses {@link #DEFAULT_FORMATTER} as {@link Formatter}.
+	 */
+	public Displayer createOutputStreamDisplayer(OutputStream stream) {
+		return createOutputStreamDisplayer(stream, DEFAULT_FORMATTER);
+	}
+
 }
