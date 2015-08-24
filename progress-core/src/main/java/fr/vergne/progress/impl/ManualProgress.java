@@ -138,6 +138,6 @@ public class ManualProgress<Value extends Number> implements Progress<Value> {
 
 	@Override
 	public String toString() {
-		return ProgressUtil.toString(this);
+		return ProgressUtil.DEFAULT_FORMATTER.format(this);
 	}
 }

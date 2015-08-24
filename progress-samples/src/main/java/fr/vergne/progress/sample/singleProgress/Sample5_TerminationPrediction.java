@@ -34,7 +34,7 @@ public class Sample5_TerminationPrediction {
 
 			@Override
 			public <Value extends Number> void display(Progress<Value> progress) {
-				String status = ProgressUtil.toString(progress);
+				String status = ProgressUtil.DEFAULT_FORMATTER.format(progress);
 
 				long currentMillis = System.currentTimeMillis();
 				long terminationMillis = ProgressUtil.predictTerminationTime(

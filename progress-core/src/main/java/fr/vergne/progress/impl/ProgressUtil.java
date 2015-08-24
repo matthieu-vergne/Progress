@@ -38,6 +38,21 @@ public class ProgressUtil {
 	}
 
 	/**
+	 * A {@link Formatter} aims at providing a {@link String} representation of
+	 * a {@link Progress}. It is often the case that one simply want to get the
+	 * current state of the {@link Progress}, thus displaying its current value,
+	 * its max value, and the percentage achieved. Such a format is provided by
+	 * {@link ProgressUtil#DEFAULT_FORMATTER}. For any more advanced format, one
+	 * can provides its own {@link Formatter}.
+	 * 
+	 * @author Matthieu Vergne <matthieu.vergne@gmail.com>
+	 * 
+	 */
+	public static interface Formatter {
+		public <Value extends Number> String format(Progress<Value> progress);
+	}
+
+	/**
 	 * This {@link Displayer} is a special one which does not display anything.
 	 * It can be used to explicitly say that no {@link Displayer} should be
 	 * used, rather than providing <code>null</code> (which is usually
@@ -50,6 +65,29 @@ public class ProgressUtil {
 			// no display
 		}
 
+	};
+
+	/**
+	 * A basic way to display a {@link Progress} is to show its current value
+	 * and, if available, the max value and the percentage of advancement. This
+	 * {@link #DEFAULT_FORMATTER} provides such a format and is the one used by
+	 * default in the {@link ProgressUtil} methods which do not require a
+	 * {@link Formatter}.
+	 */
+	public static final Formatter DEFAULT_FORMATTER = new Formatter() {
+
+		@Override
+		public <Value extends Number> String format(Progress<Value> progress) {
+			Value value = progress.getCurrentValue();
+			Value max = progress.getMaxValue();
+			if (max == null) {
+				return reduceDecimals(value, 3) + "/?";
+			} else {
+				int percent = computeIntegerPercentage(value, max);
+				return reduceDecimals(value, 3) + "/" + reduceDecimals(max, 3)
+						+ " (" + percent + "%)";
+			}
+		}
 	};
 
 	/**
@@ -221,7 +259,7 @@ public class ProgressUtil {
 
 			@Override
 			public <V extends Number> void display(Progress<V> progress) {
-				printer.println(prefix + ProgressUtil.toString(progress));
+				printer.println(prefix + DEFAULT_FORMATTER.format(progress));
 			}
 		}, new Displayer() {
 
@@ -277,7 +315,7 @@ public class ProgressUtil {
 
 			@Override
 			public <V extends Number> void display(Progress<V> progress) {
-				printer.println(ProgressUtil.toString(progress));
+				printer.println(DEFAULT_FORMATTER.format(progress));
 			}
 		};
 		displayProgress(progress, period, isLaunchDisplayed ? statusDisplayer
@@ -342,7 +380,7 @@ public class ProgressUtil {
 		bar.setStringPainted(true);
 		bar.setValue(0);
 		configureBarMaximum(progress, bar);
-		bar.setString(toString(progress));
+		bar.setString(DEFAULT_FORMATTER.format(progress));
 
 		progress.addProgressListener(new ProgressListener<Value>() {
 
@@ -350,13 +388,13 @@ public class ProgressUtil {
 			public void currentUpdate(Value value) {
 				// we multiply by 100 to manage decimals
 				bar.setValue((int) (value.doubleValue() * 100));
-				bar.setString(ProgressUtil.toString(progress));
+				bar.setString(DEFAULT_FORMATTER.format(progress));
 			}
 
 			@Override
 			public void maxUpdate(Value maxValue) {
 				configureBarMaximum(progress, bar);
-				bar.setString(ProgressUtil.toString(progress));
+				bar.setString(DEFAULT_FORMATTER.format(progress));
 			}
 		});
 		return bar;
@@ -490,18 +528,11 @@ public class ProgressUtil {
 	 *            the {@link Progress} to display
 	 * @return a string representation showing the current state of the
 	 *         {@link Progress}
+	 * @deprecated Use {@link #DEFAULT_FORMATTER} instead.
 	 */
 	public static <Value extends Number> String toString(
 			Progress<Value> progress) {
-		Value value = progress.getCurrentValue();
-		Value max = progress.getMaxValue();
-		if (max == null) {
-			return reduceDecimals(value, 3) + "/?";
-		} else {
-			int percent = computeIntegerPercentage(value, max);
-			return reduceDecimals(value, 3) + "/" + reduceDecimals(max, 3)
-					+ " (" + percent + "%)";
-		}
+		return DEFAULT_FORMATTER.format(progress);
 	}
 
 	private static String reduceDecimals(Number value, int decimals) {

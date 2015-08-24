@@ -37,7 +37,7 @@ public class Sample4_CustomDisplay_LoggerAndLogLevels {
 
 			@Override
 			public <Value extends Number> void display(Progress<Value> progress) {
-				logger.info(ProgressUtil.toString(progress));
+				logger.info(ProgressUtil.DEFAULT_FORMATTER.format(progress));
 			}
 		});
 
@@ -46,7 +46,7 @@ public class Sample4_CustomDisplay_LoggerAndLogLevels {
 
 			@Override
 			public <Value extends Number> void display(Progress<Value> progress) {
-				logger.finest(ProgressUtil.toString(progress));
+				logger.finest(ProgressUtil.DEFAULT_FORMATTER.format(progress));
 			}
 		}, ProgressUtil.NO_DISPLAYER);
 

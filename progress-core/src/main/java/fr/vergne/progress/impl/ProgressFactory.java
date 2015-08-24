@@ -136,7 +136,7 @@ public class ProgressFactory {
 
 			@Override
 			public String toString() {
-				return ProgressUtil.toString(this);
+				return ProgressUtil.DEFAULT_FORMATTER.format(this);
 			}
 		};
 	}

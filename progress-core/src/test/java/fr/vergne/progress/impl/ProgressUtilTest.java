@@ -39,9 +39,10 @@ public class ProgressUtilTest {
 	}
 
 	@Test
-	public void testToStringOnSpecificCasesPreviouslyWrong() {
+	public void testDefaultFormatterOnSpecificCasesPreviouslyWrong() {
 		assertEquals("1644/1800 (91%)",
-				ProgressUtil.toString(new ManualProgress<Integer>(1644, 1800)));
+				ProgressUtil.DEFAULT_FORMATTER
+						.format(new ManualProgress<Integer>(1644, 1800)));
 	}
 
 	@Test
