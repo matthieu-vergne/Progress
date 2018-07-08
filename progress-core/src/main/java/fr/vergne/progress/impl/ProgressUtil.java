@@ -182,7 +182,7 @@ public class ProgressUtil {
 			};
 			progress.addProgressListener(listener);
 
-			new Thread(new Runnable() {
+			Thread thread = new Thread(new Runnable() {
 
 				@Override
 				public void run() {
@@ -205,7 +205,9 @@ public class ProgressUtil {
 						progress.removeProgressListener(listener);
 					}
 				}
-			}).start();
+			});
+			thread.setDaemon(true);
+			thread.start();
 		}
 	}
 
