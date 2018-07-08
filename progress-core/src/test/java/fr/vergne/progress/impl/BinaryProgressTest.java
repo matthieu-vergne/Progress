@@ -5,11 +5,52 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
+import fr.vergne.heterogeneousmap.HeterogeneousMap;
 import fr.vergne.progress.Progress.ProgressListener;
+import fr.vergne.progress.ProgressTest;
 
-public class BinaryProgressTest {
+@RunWith(JUnitPlatform.class)
+public class BinaryProgressTest implements ProgressTest<BinaryProgress> {
+
+	@Override
+	public BinaryProgress createStartingProgress(HeterogeneousMap context) {
+		return new BinaryProgress();
+	}
+
+	@Override
+	public boolean canIncrementWithoutFinishing(BinaryProgress progress,
+			HeterogeneousMap context) {
+		return false;
+	}
+
+	@Override
+	public boolean canNeverIncrementWithoutFinishing() {
+		return true;
+	}
+	
+	@Override
+	public void increment(BinaryProgress progress, HeterogeneousMap context) {
+		progress.finish();
+	}
+
+	@Override
+	public void finish(BinaryProgress progress, HeterogeneousMap context) {
+		progress.finish();
+	}
+
+	@Override
+	public void changeMax(BinaryProgress progress, HeterogeneousMap context) {
+		// Cannot change max
+	}
+	
+	@Override
+	public boolean canNeverChangeMax() {
+		return true;
+	}
 
 	@Test
 	public void testBinaryProgressCorretlyInitialized() {

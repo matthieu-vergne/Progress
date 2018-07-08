@@ -7,11 +7,47 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
+import fr.vergne.heterogeneousmap.HeterogeneousMap;
 import fr.vergne.progress.Progress.ProgressListener;
+import fr.vergne.progress.ProgressTest;
 
-public class ManualProgressTest {
+@RunWith(JUnitPlatform.class)
+public class ManualProgressTest implements
+		ProgressTest<ManualProgress<Integer>> {
+
+	@Override
+	public ManualProgress<Integer> createStartingProgress(
+			HeterogeneousMap context) {
+		return new ManualProgress<Integer>(0, 5);
+	}
+
+	@Override
+	public boolean canIncrementWithoutFinishing(
+			ManualProgress<Integer> progress, HeterogeneousMap context) {
+		return progress.getMaxValue() > progress.getCurrentValue() + 1;
+	}
+
+	@Override
+	public void increment(ManualProgress<Integer> progress,
+			HeterogeneousMap context) {
+		progress.setCurrentValue(progress.getCurrentValue() + 1);
+	}
+
+	@Override
+	public void finish(ManualProgress<Integer> progress,
+			HeterogeneousMap context) {
+		progress.finish();
+	}
+
+	@Override
+	public void changeMax(ManualProgress<Integer> progress,
+			HeterogeneousMap context) {
+		progress.setMaxValue(progress.getMaxValue() + 1);
+	}
 
 	@Test
 	public void testManualProgressCorretlyInitialized() {
@@ -177,7 +213,7 @@ public class ManualProgressTest {
 			assertTrue(progress.isFinished());
 		}
 	}
-	
+
 	@Test
 	public void testManualProgressCorretlyAdd() {
 		ManualProgress<Integer> progress = new ManualProgress<Integer>(0, 10);
@@ -190,5 +226,4 @@ public class ManualProgressTest {
 		progress.add(5);
 		assertEquals((Integer) 8, progress.getCurrentValue());
 	}
-
 }
