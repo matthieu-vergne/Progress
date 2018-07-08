@@ -113,13 +113,6 @@ public class ProgressFactory {
 			}
 
 			@Override
-			public boolean isFinished() {
-				Value value = getCurrentValue();
-				Value max = getMaxValue();
-				return max != null && max.equals(value);
-			}
-
-			@Override
 			public void addProgressListener(
 					ProgressListener<? super Value> listener) {
 				listeners.add(listener);
@@ -259,11 +252,6 @@ public class ProgressFactory {
 				}
 
 				@Override
-				public boolean isFinished() {
-					return getCurrentValue().equals(getMaxValue());
-				}
-
-				@Override
 				public void addProgressListener(
 						ProgressListener<? super Value> listener) {
 					listeners.add(listener);
@@ -349,11 +337,6 @@ public class ProgressFactory {
 				@Override
 				public Double getMaxValue() {
 					return values.get(1);
-				}
-
-				@Override
-				public boolean isFinished() {
-					return getCurrentValue().equals(getMaxValue());
 				}
 
 				@Override

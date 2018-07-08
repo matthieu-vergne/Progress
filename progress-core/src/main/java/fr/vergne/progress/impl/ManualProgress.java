@@ -111,11 +111,6 @@ public class ManualProgress<Value extends Number> implements Progress<Value> {
 	}
 
 	@Override
-	public boolean isFinished() {
-		return maxValue != null && maxValue.equals(currentValue);
-	}
-
-	@Override
 	public void addProgressListener(ProgressListener<? super Value> listener) {
 		synchronized (this) {
 			listeners.add(listener);

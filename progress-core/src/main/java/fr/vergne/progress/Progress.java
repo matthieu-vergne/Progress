@@ -59,7 +59,11 @@ public interface Progress<Value extends Number> {
 	 * @return <code>true</code> if the {@link Progress} is finished,
 	 *         <code>false</code> otherwise
 	 */
-	public boolean isFinished();
+	default boolean isFinished() {
+		Value currentValue = getCurrentValue();
+		Value maxValue = getMaxValue();
+		return currentValue != null && currentValue.equals(maxValue);
+	}
 
 	/**
 	 * This listener allows to be notified when a property of a {@link Progress}
