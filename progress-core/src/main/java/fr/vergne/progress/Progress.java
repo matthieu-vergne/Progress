@@ -66,6 +66,31 @@ public interface Progress<Value extends Number> {
 	}
 
 	/**
+	 * This method provides the progress value returned by
+	 * {@link #getCurrentValue()} divided by {@link #getMaxValue()}, such that
+	 * it remains between 0 and 1. If the state is unknown, for example because
+	 * no max value is provided, then <code>null</code> is returned.
+	 * 
+	 * @return the current progress in [0;1] if it can be computed,
+	 *         <code>null</code> otherwise
+	 */
+	default Double getCurrentNormalizedValue() {
+		Value currentValue = getCurrentValue();
+		Value maxValue = getMaxValue();
+		if (currentValue == null) {
+			return null;
+		} else if (currentValue.doubleValue() == 0 && maxValue == null) {
+			return 0.0;
+		} else if (maxValue == null) {
+			return null;
+		} else if (currentValue.doubleValue() == maxValue.doubleValue()) {
+			return 1.0;
+		} else {
+			return currentValue.doubleValue() / maxValue.doubleValue();
+		}
+	}
+
+	/**
 	 * This listener allows to be notified when a property of a {@link Progress}
 	 * instance evolves.
 	 * 
