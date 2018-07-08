@@ -137,7 +137,7 @@ public class PredictorFactoryTest {
 
 			@Override
 			public void addProgressListener(
-					final ProgressListener<Long> listener) {
+					final ProgressListener<? super Long> listener) {
 				progress.addProgressListener(new ProgressListener<Long>() {
 
 					@Override
@@ -153,7 +153,8 @@ public class PredictorFactoryTest {
 			}
 
 			@Override
-			public void removeProgressListener(ProgressListener<Long> listener) {
+			public void removeProgressListener(
+					ProgressListener<? super Long> listener) {
 				throw new RuntimeException("Not implemented");
 			}
 		};

@@ -17,7 +17,7 @@ import fr.vergne.progress.Progress;
 public class BinaryProgress implements Progress<Byte> {
 
 	private byte current = 0;
-	private final Collection<ProgressListener<Byte>> listeners = new HashSet<ProgressListener<Byte>>();
+	private final Collection<ProgressListener<? super Byte>> listeners = new HashSet<>();
 
 	@Override
 	public Byte getCurrentValue() {
@@ -35,12 +35,12 @@ public class BinaryProgress implements Progress<Byte> {
 	}
 
 	@Override
-	public void addProgressListener(ProgressListener<Byte> listener) {
+	public void addProgressListener(ProgressListener<? super Byte> listener) {
 		listeners.add(listener);
 	}
 
 	@Override
-	public void removeProgressListener(ProgressListener<Byte> listener) {
+	public void removeProgressListener(ProgressListener<? super Byte> listener) {
 		listeners.remove(listener);
 	}
 
@@ -49,7 +49,7 @@ public class BinaryProgress implements Progress<Byte> {
 	 */
 	public void restart() {
 		current = 0;
-		for (ProgressListener<Byte> listener : listeners) {
+		for (ProgressListener<? super Byte> listener : listeners) {
 			listener.currentUpdate(current);
 		}
 	}
@@ -59,7 +59,7 @@ public class BinaryProgress implements Progress<Byte> {
 	 */
 	public void finish() {
 		current = 1;
-		for (ProgressListener<Byte> listener : listeners) {
+		for (ProgressListener<? super Byte> listener : listeners) {
 			listener.currentUpdate(current);
 		}
 	}

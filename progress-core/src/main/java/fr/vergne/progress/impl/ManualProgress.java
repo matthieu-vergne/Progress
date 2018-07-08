@@ -19,7 +19,7 @@ public class ManualProgress<Value extends Number> implements Progress<Value> {
 
 	private Value currentValue;
 	private Value maxValue;
-	private final Collection<ProgressListener<Value>> listeners = new HashSet<ProgressListener<Value>>();
+	private final Collection<ProgressListener<? super Value>> listeners = new HashSet<>();
 	private final ValueTranslator<Value> translator;
 
 	/**
@@ -51,7 +51,7 @@ public class ManualProgress<Value extends Number> implements Progress<Value> {
 		} else {
 			synchronized (this) {
 				this.currentValue = value;
-				for (ProgressListener<Value> listener : listeners) {
+				for (ProgressListener<? super Value> listener : listeners) {
 					listener.currentUpdate(value);
 				}
 			}
@@ -90,7 +90,7 @@ public class ManualProgress<Value extends Number> implements Progress<Value> {
 		} else {
 			synchronized (this) {
 				this.maxValue = value;
-				for (ProgressListener<Value> listener : listeners) {
+				for (ProgressListener<? super Value> listener : listeners) {
 					listener.maxUpdate(value);
 				}
 			}
@@ -116,14 +116,14 @@ public class ManualProgress<Value extends Number> implements Progress<Value> {
 	}
 
 	@Override
-	public void addProgressListener(ProgressListener<Value> listener) {
+	public void addProgressListener(ProgressListener<? super Value> listener) {
 		synchronized (this) {
 			listeners.add(listener);
 		}
 	}
 
 	@Override
-	public void removeProgressListener(ProgressListener<Value> listener) {
+	public void removeProgressListener(ProgressListener<? super Value> listener) {
 		synchronized (this) {
 			listeners.remove(listener);
 		}

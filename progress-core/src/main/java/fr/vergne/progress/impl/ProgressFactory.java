@@ -72,7 +72,7 @@ public class ProgressFactory {
 		final List<Value> values = new ArrayList<Value>(2);
 		values.add(startValue);
 		values.add(maxValue);
-		final Collection<ProgressListener<Value>> listeners = new HashSet<ProgressListener<Value>>();
+		final Collection<ProgressListener<? super Value>> listeners = new HashSet<>();
 
 		final ProgressListener<Value> listener = new ProgressListener<Value>() {
 
@@ -84,7 +84,7 @@ public class ProgressFactory {
 							+ value + " > " + max);
 				} else {
 					values.set(0, value);
-					for (ProgressListener<Value> listener : listeners) {
+					for (ProgressListener<? super Value> listener : listeners) {
 						listener.currentUpdate(value);
 					}
 				}
@@ -93,7 +93,7 @@ public class ProgressFactory {
 			@Override
 			public void maxUpdate(Value maxValue) {
 				values.set(1, maxValue);
-				for (ProgressListener<Value> listener : listeners) {
+				for (ProgressListener<? super Value> listener : listeners) {
 					listener.maxUpdate(maxValue);
 				}
 			}
@@ -120,12 +120,14 @@ public class ProgressFactory {
 			}
 
 			@Override
-			public void addProgressListener(ProgressListener<Value> listener) {
+			public void addProgressListener(
+					ProgressListener<? super Value> listener) {
 				listeners.add(listener);
 			}
 
 			@Override
-			public void removeProgressListener(ProgressListener<Value> listener) {
+			public void removeProgressListener(
+					ProgressListener<? super Value> listener) {
 				listeners.remove(listener);
 			}
 
@@ -217,7 +219,7 @@ public class ProgressFactory {
 			values.add(computeAdditiveCurrentValue(fixedProgresses));
 			values.add(computeAdditiveMaxValue(fixedProgresses));
 
-			final Collection<ProgressListener<Value>> listeners = new HashSet<Progress.ProgressListener<Value>>();
+			final Collection<ProgressListener<? super Value>> listeners = new HashSet<>();
 
 			final ProgressListener<Value> globalListener = new ProgressListener<Value>() {
 
@@ -225,7 +227,7 @@ public class ProgressFactory {
 				public void currentUpdate(Value value) {
 					Value globalValue = computeAdditiveCurrentValue(fixedProgresses);
 					values.set(0, globalValue);
-					for (ProgressListener<Value> listener : listeners) {
+					for (ProgressListener<? super Value> listener : listeners) {
 						listener.currentUpdate(globalValue);
 					}
 				}
@@ -234,7 +236,7 @@ public class ProgressFactory {
 				public void maxUpdate(Value maxValue) {
 					Value globalValue = computeAdditiveMaxValue(fixedProgresses);
 					values.set(1, globalValue);
-					for (ProgressListener<Value> listener : listeners) {
+					for (ProgressListener<? super Value> listener : listeners) {
 						listener.maxUpdate(globalValue);
 					}
 				}
@@ -262,13 +264,14 @@ public class ProgressFactory {
 				}
 
 				@Override
-				public void addProgressListener(ProgressListener<Value> listener) {
+				public void addProgressListener(
+						ProgressListener<? super Value> listener) {
 					listeners.add(listener);
 				}
 
 				@Override
 				public void removeProgressListener(
-						ProgressListener<Value> listener) {
+						ProgressListener<? super Value> listener) {
 					listeners.remove(listener);
 				}
 
@@ -309,7 +312,7 @@ public class ProgressFactory {
 			values.add(computeCountingCurrentValue(fixedProgresses));
 			values.add((double) fixedProgresses.size());
 
-			final Collection<ProgressListener<Double>> listeners = new HashSet<Progress.ProgressListener<Double>>();
+			final Collection<ProgressListener<? super Double>> listeners = new HashSet<>();
 
 			final ProgressListener<Number> globalListener = new ProgressListener<Number>() {
 
@@ -317,7 +320,7 @@ public class ProgressFactory {
 				public void currentUpdate(Number value) {
 					double globalValue = computeCountingCurrentValue(fixedProgresses);
 					values.set(0, globalValue);
-					for (ProgressListener<Double> listener : listeners) {
+					for (ProgressListener<? super Double> listener : listeners) {
 						listener.currentUpdate(globalValue);
 					}
 				}
@@ -355,13 +358,13 @@ public class ProgressFactory {
 
 				@Override
 				public void addProgressListener(
-						ProgressListener<Double> listener) {
+						ProgressListener<? super Double> listener) {
 					listeners.add(listener);
 				}
 
 				@Override
 				public void removeProgressListener(
-						ProgressListener<Double> listener) {
+						ProgressListener<? super Double> listener) {
 					listeners.remove(listener);
 				}
 

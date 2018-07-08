@@ -105,7 +105,7 @@ public interface Progress<Value extends Number> {
 	 * @param listener
 	 *            the listener to register
 	 */
-	public void addProgressListener(ProgressListener<Value> listener);
+	public void addProgressListener(ProgressListener<? super Value> listener);
 
 	/**
 	 * This method allows to unregister a listener previously registered with
@@ -114,5 +114,5 @@ public interface Progress<Value extends Number> {
 	 * @param listener
 	 *            the listener to unregister
 	 */
-	public void removeProgressListener(ProgressListener<Value> listener);
+	public void removeProgressListener(ProgressListener<? super Value> listener);
 }
