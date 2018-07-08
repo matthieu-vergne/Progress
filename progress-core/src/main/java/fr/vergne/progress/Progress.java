@@ -51,10 +51,10 @@ public interface Progress<Value extends Number> {
 	public Value getMaxValue();
 
 	/**
-	 * This method must return <code>true</code> if and only if the
-	 * {@link Value}s returned by {@link #getCurrentValue()} and
-	 * {@link #getMaxValue()} are equal and not <code>null</code>. In any other
-	 * case, this method must return <code>false</code>.
+	 * This method returns <code>true</code> if and only if the {@link Value}s
+	 * returned by {@link #getCurrentValue()} and {@link #getMaxValue()} are
+	 * equal and not <code>null</code>. In any other case, this method returns
+	 * <code>false</code>.
 	 * 
 	 * @return <code>true</code> if the {@link Progress} is finished,
 	 *         <code>false</code> otherwise
