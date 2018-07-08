@@ -96,7 +96,6 @@ public class ProgressFactoryTest {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalAdditiveProgressManagesInteger() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(1, 10);
@@ -109,7 +108,6 @@ public class ProgressFactoryTest {
 		assertEquals((Integer) 18, progress.getMaxValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalAdditiveProgressManagesLong() {
 		ManualProgress<Long> p1 = factory.createManualProgress(1L, 10L);
@@ -122,7 +120,6 @@ public class ProgressFactoryTest {
 		assertEquals((Long) 18L, progress.getMaxValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalAdditiveProgressManagesShort() {
 		ManualProgress<Short> p1 = factory.createManualProgress((short) 1,
@@ -138,7 +135,6 @@ public class ProgressFactoryTest {
 		assertEquals((Short) (short) 18, progress.getMaxValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalAdditiveProgressManagesFloat() {
 		ManualProgress<Float> p1 = factory.createManualProgress(1.3F, 10.1F);
@@ -151,7 +147,6 @@ public class ProgressFactoryTest {
 		assertEquals((Float) 18.6F, progress.getMaxValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalAdditiveProgressManagesDouble() {
 		ManualProgress<Double> p1 = factory.createManualProgress(1.3, 10.1);
@@ -164,7 +159,6 @@ public class ProgressFactoryTest {
 		assertEquals((Double) 18.6, progress.getMaxValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalAdditiveProgressManagesByte() {
 		ManualProgress<Byte> p1 = factory.createManualProgress((byte) 1,
@@ -180,7 +174,6 @@ public class ProgressFactoryTest {
 		assertEquals((Byte) (byte) 18, progress.getMaxValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalAdditiveProgressManagesBigInteger() {
 		ManualProgress<BigInteger> p1 = factory.createManualProgress(
@@ -196,7 +189,6 @@ public class ProgressFactoryTest {
 		assertEquals(new BigInteger("18"), progress.getMaxValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalAdditiveProgressManagesBigDecimal() {
 		ManualProgress<BigDecimal> p1 = factory.createManualProgress(
@@ -212,7 +204,6 @@ public class ProgressFactoryTest {
 		assertEquals(new BigDecimal("18.6"), progress.getMaxValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalAdditiveProgressProvidesCorrectCurrentValue() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
@@ -230,7 +221,6 @@ public class ProgressFactoryTest {
 		assertEquals((Integer) 7, progress.getCurrentValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalAdditiveProgressProvidesCorrectMaxValue() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
@@ -246,7 +236,6 @@ public class ProgressFactoryTest {
 		assertEquals((Integer) 13, progress.getMaxValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalAdditiveProgressProvidesCorrectFinishedState() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
@@ -272,7 +261,6 @@ public class ProgressFactoryTest {
 		assertTrue(progress.isFinished());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalAdditiveProgressProvidesCorrectNotifications() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
@@ -345,7 +333,6 @@ public class ProgressFactoryTest {
 		assertEquals(maxReference, progress.getMaxValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalCountingProgressProvidesCorrectCurrentValue() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
@@ -370,7 +357,6 @@ public class ProgressFactoryTest {
 		assertEquals((Double) 2.0, progress.getCurrentValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalCountingProgressProvidesCorrectMaxValue() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
@@ -388,7 +374,6 @@ public class ProgressFactoryTest {
 		assertEquals((Double) 3.0, progress.getMaxValue());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalCountingProgressProvidesCorrectFinishedState() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
@@ -414,7 +399,6 @@ public class ProgressFactoryTest {
 		assertTrue(progress.isFinished());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalCountingProgressProvidesCorrectNotifications() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);
@@ -449,7 +433,6 @@ public class ProgressFactoryTest {
 		assertEquals(progress.getCurrentValue(), notifiedValues.get(0));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGlobalCountingProgressManagesHeterogenousTypes() {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 10);

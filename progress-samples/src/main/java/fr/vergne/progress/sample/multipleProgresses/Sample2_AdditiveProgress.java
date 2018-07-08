@@ -21,7 +21,6 @@ public class Sample2_AdditiveProgress {
 		ManualProgress<Integer> p1 = factory.createManualProgress(0, 5);
 		ManualProgress<Integer> p2 = factory.createManualProgress(0, 10);
 		ManualProgress<Integer> p3 = factory.createManualProgress(0, 5);
-		@SuppressWarnings("unchecked")
 		Collection<ManualProgress<Integer>> subProgresses = Arrays.asList(p1,
 				p2, p3);
 
